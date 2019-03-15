@@ -8,3 +8,5 @@ if(!appEl) // in case of old index.html in cache
   appEl = document.querySelector('.app');
 
 ReactDOM.render(<App />, appEl);
+
+// Testing git push after renamed project
