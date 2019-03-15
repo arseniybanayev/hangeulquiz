@@ -3,8 +3,12 @@ Hangeul Quiz made with React.js.
 
 See live at https://hangeul.soy/
 
-Install deps: `npm install`
+Install dependencies
+1. `npm install`
+2. `npm audit fix` (because of some vulnerability)
 
-Development: `npm start`
+Development:
+1. `npm start`
+2. Go to http://localhost:8080
 
 Production: `npm run build`
