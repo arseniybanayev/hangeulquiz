@@ -1,8 +1,7 @@
-# Kana Quiz
-Kana Quiz made with React.js.
+# Hangeul Quiz
+Hangeul Quiz made with React.js.
 
-See live at https://kana.pro/
-
+See live at https://hangeul.soy/
 
 Install deps: `npm install`
 
