@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { kanaDictionary } from '../../data/kanaDictionary';
 import ChooseCharacters from '../ChooseCharacters/ChooseCharacters';
 import Game from '../Game/Game';
 
@@ -8,7 +7,7 @@ class GameContainer extends Component {
     stage:1,
     isLocked: false,
     decidedGroups: JSON.parse(localStorage.getItem('decidedGroups') || null) || []
-  }
+  };
 
   componentWillReceiveProps() {
     if(!this.state.isLocked)
@@ -16,15 +15,15 @@ class GameContainer extends Component {
   }
 
   startGame = decidedGroups => {
-    if(parseInt(this.state.stage)<1 || isNaN(parseInt(this.state.stage)))
+    if (parseInt(this.state.stage) < 1 || isNaN(parseInt(this.state.stage)))
       this.setState({stage: 1});
-    else if(parseInt(this.state.stage)>4)
+    else if (parseInt(this.state.stage) > 4)
       this.setState({stage: 4});
 
     this.setState({decidedGroups: decidedGroups});
     localStorage.setItem('decidedGroups', JSON.stringify(decidedGroups));
     this.props.handleStartGame();
-  }
+  };
 
   stageUp = () => {
     this.setState({stage: this.state.stage+1});

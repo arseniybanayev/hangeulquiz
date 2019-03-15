@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { kanaDictionary } from '../../data/kanaDictionary';
+import { hangeul } from '../../data/hangeul';
 import { quizSettings } from '../../data/quizSettings';
 import { findRomajisAtKanaKey, removeFromArray, arrayContains, shuffle, cartesianProduct } from '../../data/helperFuncs';
 import './Question.scss';
@@ -12,12 +12,7 @@ class Question extends Component {
     currentQuestion: [],
     answerOptions: [],
     stageProgress: 0
-  }
-    // this.setNewQuestion = this.setNewQuestion.bind(this);
-    // this.handleAnswer = this.handleAnswer.bind(this);
-    // this.handleAnswerChange = this.handleAnswerChange.bind(this);
-    // this.handleSubmit = this.handleSubmit.bind(this);
-  // }
+  };
 
   getRandomKanas(amount, include, exclude) {
     let randomizedKanas = this.askableKanaKeys.slice();
@@ -38,19 +33,19 @@ class Question extends Component {
       randomizedKanas = randomizedKanas.slice(0,20);
 
       // let's remove kanas that have the same answer as included
-      let searchFor = findRomajisAtKanaKey(include, kanaDictionary)[0];
+      let searchFor = findRomajisAtKanaKey(include, hangeul)[0];
       randomizedKanas = randomizedKanas.filter(character => {
-        return searchFor!=findRomajisAtKanaKey(character, kanaDictionary)[0];
+        return searchFor!=findRomajisAtKanaKey(character, hangeul)[0];
       });
 
       // now let's remove "duplicate" kanas (if two kanas have same answers)
       let tempRandomizedKanas = randomizedKanas.slice();
       randomizedKanas = randomizedKanas.filter(r => {
         let dupeFound = false;
-        searchFor = findRomajisAtKanaKey(r, kanaDictionary)[0];
+        searchFor = findRomajisAtKanaKey(r, hangeul)[0];
         tempRandomizedKanas.shift();
         tempRandomizedKanas.forEach(w => {
-          if(findRomajisAtKanaKey(w, kanaDictionary)[0]==searchFor)
+          if(findRomajisAtKanaKey(w, hangeul)[0]==searchFor)
             dupeFound = true;
         });
         return !dupeFound;
@@ -89,14 +84,14 @@ class Question extends Component {
     // console.log(this.currentQuestion);
     this.allowedAnswers = [];
     if(this.props.stage==1 || this.props.stage==3)
-      this.allowedAnswers = findRomajisAtKanaKey(this.currentQuestion, kanaDictionary);
+      this.allowedAnswers = findRomajisAtKanaKey(this.currentQuestion, hangeul);
     else if(this.props.stage==2)
       this.allowedAnswers = this.currentQuestion;
     else if(this.props.stage==4) {
       let tempAllowedAnswers = [];
 
       this.currentQuestion.forEach(key => {
-        tempAllowedAnswers.push(findRomajisAtKanaKey(key, kanaDictionary));
+        tempAllowedAnswers.push(findRomajisAtKanaKey(key, hangeul));
       });
 
       cartesianProduct(tempAllowedAnswers).forEach(answer => {
@@ -132,18 +127,18 @@ class Question extends Component {
     this.previousQuestion = '';
     this.previousAnswer = '';
     this.stageProgress = 0;
-    Object.keys(kanaDictionary).forEach(whichKana => {
+    Object.keys(hangeul).forEach(whichKana => {
       // console.log(whichKana); // 'hiragana' or 'katakana'
-      Object.keys(kanaDictionary[whichKana]).forEach(groupName => {
+      Object.keys(hangeul[whichKana]).forEach(groupName => {
         // console.log(groupName); // 'h_group1', ...
         // do we want to include this group?
         if(arrayContains(groupName, this.props.decidedGroups)) {
           // let's merge the group to our askableKanas
-          this.askableKanas = Object.assign(this.askableKanas, kanaDictionary[whichKana][groupName]['characters']);
-          Object.keys(kanaDictionary[whichKana][groupName]['characters']).forEach(key => {
+          this.askableKanas = Object.assign(this.askableKanas, hangeul[whichKana][groupName]['characters']);
+          Object.keys(hangeul[whichKana][groupName]['characters']).forEach(key => {
             // let's add all askable kana keys to array
             this.askableKanaKeys.push(key);
-            this.askableRomajis.push(kanaDictionary[whichKana][groupName]['characters'][key][0]);
+            this.askableRomajis.push(hangeul[whichKana][groupName]['characters'][key][0]);
           });
         }
       });
@@ -158,7 +153,7 @@ class Question extends Component {
 
   getShowableQuestion() {
     if(this.getAnswerType()=='kana')
-      return findRomajisAtKanaKey(this.state.currentQuestion, kanaDictionary)[0];
+      return findRomajisAtKanaKey(this.state.currentQuestion, hangeul)[0];
     else return this.state.currentQuestion;
   }
 
@@ -170,7 +165,7 @@ class Question extends Component {
     else {
       let rightAnswer = (
         this.props.stage==2 ?
-          findRomajisAtKanaKey(this.previousQuestion, kanaDictionary)[0]
+          findRomajisAtKanaKey(this.previousQuestion, hangeul)[0]
           : this.previousQuestion.join('')
         )+' = '+ this.previousAllowedAnswers[0];
 
@@ -265,7 +260,7 @@ class Question extends Component {
 class AnswerButton extends Component {
   getShowableAnswer() {
     if(this.props.answertype=='romaji')
-      return findRomajisAtKanaKey(this.props.answer, kanaDictionary)[0];
+      return findRomajisAtKanaKey(this.props.answer, hangeul)[0];
     else return this.props.answer;
   }
 

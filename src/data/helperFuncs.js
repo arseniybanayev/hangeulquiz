@@ -12,6 +12,10 @@ export function removeFromArray(needle, haystack) {
     return haystack;
 }
 
+export function addDecimalToHex(hex, decimalToAdd) {
+  return (parseInt(hex, 16) + parseInt(decimalToAdd.toString())).toString(16);
+}
+
 export function findRomajisAtKanaKey(needle, kanaDictionary) {
     let romaji = [];
     Object.keys(kanaDictionary).map(function(whichKana) {
@@ -20,7 +24,7 @@ export function findRomajisAtKanaKey(needle, kanaDictionary) {
             // console.log(groupName); // 'h_group1', ...
             Object.keys(kanaDictionary[whichKana][groupName]['characters']).map(function(key) {
                 if(key==needle) {
-                    // console.log(kanaDictionary[whichKana][groupName]['characters'][key]);
+                    // console.log(hangeul[whichKana][groupName]['characters'][key]);
                     romaji = kanaDictionary[whichKana][groupName]['characters'][key];
                 }
             }, this);
@@ -30,11 +34,11 @@ export function findRomajisAtKanaKey(needle, kanaDictionary) {
     return romaji;
 }
 
-    // whichKanaTypeIsThis(character, kanaDictionary) { // in case if needed later
+    // whichKanaTypeIsThis(character, hangeul) { // in case if needed later
     //     let type = null;
-    //     Object.keys(kanaDictionary).map(function(whichKana) {
-    //         Object.keys(kanaDictionary[whichKana]).map(function(groupName) {
-    //             Object.keys(kanaDictionary[whichKana][groupName]['characters']).map(function(key) {
+    //     Object.keys(hangeul).map(function(whichKana) {
+    //         Object.keys(hangeul[whichKana]).map(function(groupName) {
+    //             Object.keys(hangeul[whichKana][groupName]['characters']).map(function(key) {
     //                 if(key==character) {
     //                     type = whichKana;
     //                 }

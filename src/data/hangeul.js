@@ -1,8 +1,89 @@
-export const hangeulDictionary = {
-  
+export const first = 'AC00';
+export const last = 'D7A3';
+
+export const initialConsonants = [
+  'ᄀ',
+  'ᄁ',
+  'ᄂ',
+  'ᄃ',
+  'ᄄ',
+  'ᄅ',
+  'ᄆ',
+  'ᄇ',
+  'ᄈ',
+  'ᄉ',
+  'ᄊ',
+  'ᄋ',
+  'ᄌ',
+  'ᄍ',
+  'ᄎ',
+  'ᄏ',
+  'ᄐ',
+  'ᄑ',
+  'ᄒ'
+];
+
+export const vowels = [
+  'ᅡ',
+  'ᅢ',
+  'ᅣ',
+  'ᅤ',
+  'ᅥ',
+  'ᅦ',
+  'ᅧ',
+  'ᅨ',
+  'ᅩ',
+  'ᅪ',
+  'ᅫ',
+  'ᅬ',
+  'ᅭ',
+  'ᅮ',
+  'ᅯ',
+  'ᅰ',
+  'ᅱ',
+  'ᅲ',
+  'ᅳ',
+  'ᅴ',
+  'ᅵ'
+];
+
+export const finalConsonants = [
+  '',
+  'ᆨ',
+  'ᆩ',
+  'ᆪ',
+  'ᆫ',
+  'ᆬ',
+  'ᆭ',
+  'ᆮ',
+  'ᆯ',
+  'ᆰ',
+  'ᆱ',
+  'ᆲ',
+  'ᆳ',
+  'ᆴ',
+  'ᆵ',
+  'ᆶ',
+  'ᆷ',
+  'ᆸ',
+  'ᆹ',
+  'ᆺ',
+  'ᆻ',
+  'ᆼ',
+  'ᆽ',
+  'ᆾ',
+  'ᆿ',
+  'ᇀ',
+  'ᇁ',
+  'ᇂ'
+];
+
+export const groupDefinitions = {
+  'Handwriting': 'font-family: \'Gaegu\', cursive;',
+  'Complete Unicode': ''
 };
 
-export const kanaDictionary = {
+export const hangeul = {
   'hiragana': {
     'h_group1': { characters: { 'あ': ['a'], 'い': ['i'], 'う': ['u'], 'え': ['e'], 'お': ['o'] } },
     'h_group2': { characters: { 'か': ['ka'], 'き': ['ki'], 'く': ['ku'], 'け': ['ke'], 'こ': ['ko'] } },

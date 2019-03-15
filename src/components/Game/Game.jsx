@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { kanaDictionary } from '../../data/kanaDictionary';
+import { hangeul } from '../../data/hangeul';
 import ShowStage from './ShowStage';
 import Question from './Question';
 

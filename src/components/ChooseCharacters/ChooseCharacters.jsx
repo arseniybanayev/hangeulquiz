@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Switch from 'react-toggle-switch';
-import { kanaDictionary } from '../../data/kanaDictionary';
+import {groupDefinitions} from '../../data/hangeul';
 import './ChooseCharacters.scss';
 import CharacterGroup from './CharacterGroup';
 
@@ -34,7 +34,7 @@ class ChooseCharacters extends Component {
       else if(rect.y <= window.innerHeight && !this.state.startIsVisible)
         this.setState({ startIsVisible: true });
     }
-  }
+  };
 
   scrollToStart() {
     if(this.startRef) {
@@ -66,27 +66,26 @@ class ChooseCharacters extends Component {
   }
 
   toggleSelect = groupName => {
-    if(this.getIndex(groupName) > -1)
+    if (this.getIndex(groupName) > -1)
       this.removeSelect(groupName);
     else
       this.addSelect(groupName);
-  }
+  };
 
-  selectAll(whichKana) {
-    const thisKana = kanaDictionary[whichKana];
+  selectAll() {
     let newSelectedGroups = this.state.selectedGroups.slice();
-    Object.keys(thisKana).forEach(groupName => {
+    Object.keys(groupDefinitions).forEach(groupName => {
       if(!this.isSelected(groupName))
         newSelectedGroups.push(groupName);
     });
     this.setState({errMsg: '', selectedGroups: newSelectedGroups});
   }
 
-  selectNone(whichKana) {
+  selectNone() {
     let newSelectedGroups = [];
     this.state.selectedGroups.forEach(groupName => {
       let mustBeRemoved = false;
-      Object.keys(kanaDictionary[whichKana]).forEach(removableGroupName => {
+      Object.keys(groupDefinitions).forEach(removableGroupName => {
         if(removableGroupName === groupName)
           mustBeRemoved = true;
       });
@@ -96,20 +95,16 @@ class ChooseCharacters extends Component {
     this.setState({selectedGroups: newSelectedGroups});
   }
 
-  showGroupRows(whichKana) {
-    const thisKana = kanaDictionary[whichKana];
+  showGroupRows() {
     let rows = [];
-    Object.keys(thisKana).forEach((groupName, idx) => {
-      if((!groupName.endsWith("a")) &&
-        (!groupName.endsWith("s"))) {
-        rows.push(<CharacterGroup
-          key={idx}
-          groupName={groupName}
-          selected={this.isSelected(groupName)}
-          characters={thisKana[groupName].characters}
-          handleToggleSelect={this.toggleSelect}
-        />);
-      }
+    Object.keys(groupDefinitions).forEach((groupName, idx) => {
+      rows.push(<CharacterGroup
+        key={idx}
+        groupName={groupName}
+        selected={this.isSelected(groupName)}
+        characters={['A', 'B', 'C']}
+        handleToggleSelect={this.toggleSelect}
+      />);
     });
 
     return rows;
@@ -130,36 +125,23 @@ class ChooseCharacters extends Component {
           <div className="col-xs-12">
             <div className="panel panel-default">
               <div className="panel-body welcome">
-                <h4>Welcome to Kana Pro!</h4>
+                <h4>Welcome to Hangeul.soy!</h4>
                 <p>Please choose the groups of characters that you'd like to be studying.</p>
               </div>
             </div>
           </div>
         </div>
         <div className="row">
-          <div className="col-sm-6">
+          <div className="col-sm-12">
             <div className="panel panel-default">
-              <div className="panel-heading">Hiragana · ひらがな</div>
+              <div className="panel-heading">Hangeul · 한글</div>
               <div className="panel-body selection-areas">
-                {this.showGroupRows('hiragana')}
+                {this.showGroupRows()}
               </div>
               <div className="panel-footer text-center">
-                <a href="javascript:;" onClick={()=>this.selectAll('hiragana')}>All</a>
+                <a href="javascript:" onClick={()=>this.selectAll()}>All</a>
                 &nbsp;&middot;&nbsp;
-                <a href="javascript:;" onClick={()=>this.selectNone('hiragana')}>None</a>
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-6">
-            <div className="panel panel-default">
-              <div className="panel-heading">Katakana · カタカナ</div>
-              <div className="panel-body selection-areas">
-                {this.showGroupRows('katakana')}
-              </div>
-              <div className="panel-footer text-center">
-                <a href="javascript:;" onClick={()=>this.selectAll('katakana')}>All</a>
-                &nbsp;&middot;&nbsp;
-                <a href="javascript:;" onClick={()=>this.selectNone('katakana')}>None</a>
+                <a href="javascript:" onClick={()=>this.selectNone()}>None</a>
               </div>
             </div>
           </div>
