@@ -29,7 +29,6 @@ class CharacterGroup extends Component {
       <div
       className={
         'choose-row'
-          + (this.props.groupName.endsWith('_a') || this.props.groupName.endsWith('_s') ? ' alt-row' : '')
           + (['h_group16_a','k_group18_a','k_group29_a'].includes(this.props.groupName) ? ' divider-row' : '')
       }
       onClick={() => {

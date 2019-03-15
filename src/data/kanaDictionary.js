@@ -1,3 +1,7 @@
+export const hangeulDictionary = {
+  
+};
+
 export const kanaDictionary = {
   'hiragana': {
     'h_group1': { characters: { 'あ': ['a'], 'い': ['i'], 'う': ['u'], 'え': ['e'], 'お': ['o'] } },
