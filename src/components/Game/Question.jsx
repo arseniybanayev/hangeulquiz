@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hangeul } from '../../data/hangeul';
+import { kanas } from '../../data/hangeul';
 import { quizSettings } from '../../data/quizSettings';
 import { findRomajisAtKanaKey, removeFromArray, arrayContains, shuffle, cartesianProduct } from '../../data/helperFuncs';
 import './Question.scss';
@@ -33,19 +33,19 @@ class Question extends Component {
       randomizedKanas = randomizedKanas.slice(0,20);
 
       // let's remove kanas that have the same answer as included
-      let searchFor = findRomajisAtKanaKey(include, hangeul)[0];
+      let searchFor = findRomajisAtKanaKey(include, kanas)[0];
       randomizedKanas = randomizedKanas.filter(character => {
-        return searchFor!=findRomajisAtKanaKey(character, hangeul)[0];
+        return searchFor!=findRomajisAtKanaKey(character, kanas)[0];
       });
 
       // now let's remove "duplicate" kanas (if two kanas have same answers)
       let tempRandomizedKanas = randomizedKanas.slice();
       randomizedKanas = randomizedKanas.filter(r => {
         let dupeFound = false;
-        searchFor = findRomajisAtKanaKey(r, hangeul)[0];
+        searchFor = findRomajisAtKanaKey(r, kanas)[0];
         tempRandomizedKanas.shift();
         tempRandomizedKanas.forEach(w => {
-          if(findRomajisAtKanaKey(w, hangeul)[0]==searchFor)
+          if(findRomajisAtKanaKey(w, kanas)[0]==searchFor)
             dupeFound = true;
         });
         return !dupeFound;
@@ -84,14 +84,14 @@ class Question extends Component {
     // console.log(this.currentQuestion);
     this.allowedAnswers = [];
     if(this.props.stage==1 || this.props.stage==3)
-      this.allowedAnswers = findRomajisAtKanaKey(this.currentQuestion, hangeul);
+      this.allowedAnswers = findRomajisAtKanaKey(this.currentQuestion, kanas);
     else if(this.props.stage==2)
       this.allowedAnswers = this.currentQuestion;
     else if(this.props.stage==4) {
       let tempAllowedAnswers = [];
 
       this.currentQuestion.forEach(key => {
-        tempAllowedAnswers.push(findRomajisAtKanaKey(key, hangeul));
+        tempAllowedAnswers.push(findRomajisAtKanaKey(key, kanas));
       });
 
       cartesianProduct(tempAllowedAnswers).forEach(answer => {
@@ -118,7 +118,7 @@ class Question extends Component {
     }
     else
       this.setNewQuestion();
-  }
+  };
 
   initializeCharacters() {
     this.askableKanas = {};
@@ -127,18 +127,18 @@ class Question extends Component {
     this.previousQuestion = '';
     this.previousAnswer = '';
     this.stageProgress = 0;
-    Object.keys(hangeul).forEach(whichKana => {
+    Object.keys(kanas).forEach(whichKana => {
       // console.log(whichKana); // 'hiragana' or 'katakana'
-      Object.keys(hangeul[whichKana]).forEach(groupName => {
+      Object.keys(kanas[whichKana]).forEach(groupName => {
         // console.log(groupName); // 'h_group1', ...
         // do we want to include this group?
         if(arrayContains(groupName, this.props.decidedGroups)) {
           // let's merge the group to our askableKanas
-          this.askableKanas = Object.assign(this.askableKanas, hangeul[whichKana][groupName]['characters']);
-          Object.keys(hangeul[whichKana][groupName]['characters']).forEach(key => {
+          this.askableKanas = Object.assign(this.askableKanas, kanas[whichKana][groupName]['characters']);
+          Object.keys(kanas[whichKana][groupName]['characters']).forEach(key => {
             // let's add all askable kana keys to array
             this.askableKanaKeys.push(key);
-            this.askableRomajis.push(hangeul[whichKana][groupName]['characters'][key][0]);
+            this.askableRomajis.push(kanas[whichKana][groupName]['characters'][key][0]);
           });
         }
       });
@@ -153,7 +153,7 @@ class Question extends Component {
 
   getShowableQuestion() {
     if(this.getAnswerType()=='kana')
-      return findRomajisAtKanaKey(this.state.currentQuestion, hangeul)[0];
+      return findRomajisAtKanaKey(this.state.currentQuestion, kanas)[0];
     else return this.state.currentQuestion;
   }
 
@@ -165,7 +165,7 @@ class Question extends Component {
     else {
       let rightAnswer = (
         this.props.stage==2 ?
-          findRomajisAtKanaKey(this.previousQuestion, hangeul)[0]
+          findRomajisAtKanaKey(this.previousQuestion, kanas)[0]
           : this.previousQuestion.join('')
         )+' = '+ this.previousAllowedAnswers[0];
 
@@ -260,7 +260,7 @@ class Question extends Component {
 class AnswerButton extends Component {
   getShowableAnswer() {
     if(this.props.answertype=='romaji')
-      return findRomajisAtKanaKey(this.props.answer, hangeul)[0];
+      return findRomajisAtKanaKey(this.props.answer, kanas)[0];
     else return this.props.answer;
   }
 

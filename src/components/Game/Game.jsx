@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { hangeul } from '../../data/hangeul';
+import { kanas } from '../../data/hangeul';
 import ShowStage from './ShowStage';
 import Question from './Question';
 
 class Game extends Component {
-  state = { showScreen: '' }
+  state = { showScreen: '' };
 
   componentWillMount() {
     this.setState({showScreen: 'stage'});
@@ -13,16 +13,16 @@ class Game extends Component {
   stageUp = () => {
     this.props.stageUp();
     this.setState({showScreen: 'stage'});
-  }
+  };
 
   lockStage = stage => {
     this.setState({showScreen: 'question'});
     this.props.lockStage(stage);
-  }
+  };
 
   showQuestion = () => {
     this.setState({showScreen: 'question'})
-  }
+  };
 
   render() {
     return (

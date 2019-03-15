@@ -24,7 +24,7 @@ export function findRomajisAtKanaKey(needle, kanaDictionary) {
             // console.log(groupName); // 'h_group1', ...
             Object.keys(kanaDictionary[whichKana][groupName]['characters']).map(function(key) {
                 if(key==needle) {
-                    // console.log(hangeul[whichKana][groupName]['characters'][key]);
+                    // console.log(kanas[whichKana][groupName]['characters'][key]);
                     romaji = kanaDictionary[whichKana][groupName]['characters'][key];
                 }
             }, this);
@@ -34,11 +34,11 @@ export function findRomajisAtKanaKey(needle, kanaDictionary) {
     return romaji;
 }
 
-    // whichKanaTypeIsThis(character, hangeul) { // in case if needed later
+    // whichKanaTypeIsThis(character, kanas) { // in case if needed later
     //     let type = null;
-    //     Object.keys(hangeul).map(function(whichKana) {
-    //         Object.keys(hangeul[whichKana]).map(function(groupName) {
-    //             Object.keys(hangeul[whichKana][groupName]['characters']).map(function(key) {
+    //     Object.keys(kanas).map(function(whichKana) {
+    //         Object.keys(kanas[whichKana]).map(function(groupName) {
+    //             Object.keys(kanas[whichKana][groupName]['characters']).map(function(key) {
     //                 if(key==character) {
     //                     type = whichKana;
     //                 }

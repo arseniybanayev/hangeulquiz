@@ -2,16 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="99947cac-f1ff-43a6-9d02-3e56470b98dd" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ChooseCharacters/CharacterGroup.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ChooseCharacters/CharacterGroup.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ChooseCharacters/ChooseCharacters.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ChooseCharacters/ChooseCharacters.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Game/Game.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Game/Game.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Game/Question.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Game/Question.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/GameContainer/GameContainer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/GameContainer/GameContainer.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Navbar/Navbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Navbar/Navbar.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Navbar/Navbar.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Navbar/Navbar.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/hangeul.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/hangeul.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/data/helperFuncs.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/helperFuncs.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/kanaDictionary.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/hangeul.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/dist/" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -25,11 +19,41 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/ChooseCharacters/ChooseCharacters.jsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
-              <caret line="104" column="34" selection-start-line="104" selection-start-column="34" selection-end-line="104" selection-end-column="34" />
+            <state relative-caret-position="346">
+              <caret line="104" column="34" lean-forward="true" selection-start-line="104" selection-start-column="34" selection-end-line="104" selection-end-column="34" />
+              <folding>
+                <element signature="e#0#41#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/components/Game/Question.jsx">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="129" column="21" selection-start-line="129" selection-start-column="21" selection-end-line="129" selection-end-column="21" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/data/hangeul.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="85" column="22" lean-forward="true" selection-start-line="85" selection-start-column="22" selection-end-line="85" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/components/Game/Game.jsx">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="49">
+              <caret line="6" column="29" selection-start-line="6" selection-start-column="29" selection-end-line="6" selection-end-column="29" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
               </folding>
@@ -84,13 +108,15 @@
         <option value="$PROJECT_DIR$/src/components/ChooseCharacters/ChooseCharacters.scss" />
         <option value="$PROJECT_DIR$/src/data/helperFuncs.js" />
         <option value="$PROJECT_DIR$/play.html" />
-        <option value="$PROJECT_DIR$/src/components/Game/Question.jsx" />
         <option value="$PROJECT_DIR$/src/data/kanaDictionary.js" />
         <option value="$PROJECT_DIR$/src/components/GameContainer/GameContainer.jsx" />
         <option value="$PROJECT_DIR$/src/components/Navbar/Navbar.scss" />
         <option value="$PROJECT_DIR$/src/components/Navbar/Navbar.jsx" />
         <option value="$PROJECT_DIR$/src/components/ChooseCharacters/CharacterGroup.jsx" />
         <option value="$PROJECT_DIR$/src/components/ChooseCharacters/ChooseCharacters.jsx" />
+        <option value="$PROJECT_DIR$/src/components/Game/Game.jsx" />
+        <option value="$PROJECT_DIR$/src/components/Game/Question.jsx" />
+        <option value="$PROJECT_DIR$/src/data/hangeul.js" />
       </list>
     </option>
   </component>
@@ -207,12 +233,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1552679812327</updated>
-      <workItem from="1552679817452" duration="7711000" />
+      <workItem from="1552679817452" duration="8159000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7711000" />
+    <option name="totallyTimeSpent" value="8159000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1519" height="977" extended-state="6" />
@@ -263,13 +289,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/Game/Question.jsx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="134" column="52" lean-forward="true" selection-start-line="134" selection-start-column="52" selection-end-line="134" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external/lib.dom.d.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -277,32 +296,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/Game/Game.jsx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="33" column="9" lean-forward="true" selection-start-line="33" selection-start-column="9" selection-end-line="33" selection-end-column="9" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/ChooseCharacters/ChooseCharacters.scss">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="277">
           <caret line="42" column="10" selection-start-line="42" selection-start-column="10" selection-end-line="42" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/data/hangeul.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="86" column="15" lean-forward="true" selection-start-line="86" selection-start-column="15" selection-end-line="86" selection-end-column="15" />
-          <folding>
-            <element signature="e#33#168#0" />
-            <element signature="e#193#199#0" />
-            <element signature="e#392#589#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -354,13 +351,37 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/ChooseCharacters/ChooseCharacters.jsx">
+    <entry file="file://$PROJECT_DIR$/src/components/Game/Game.jsx">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="104" column="34" selection-start-line="104" selection-start-column="34" selection-end-line="104" selection-end-column="34" />
+        <state relative-caret-position="49">
+          <caret line="6" column="29" selection-start-line="6" selection-start-column="29" selection-end-line="6" selection-end-column="29" />
           <folding>
             <element signature="e#0#41#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/ChooseCharacters/ChooseCharacters.jsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="346">
+          <caret line="104" column="34" lean-forward="true" selection-start-line="104" selection-start-column="34" selection-end-line="104" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/Game/Question.jsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="129" column="21" selection-start-line="129" selection-start-column="21" selection-end-line="129" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/data/hangeul.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="85" column="22" lean-forward="true" selection-start-line="85" selection-start-column="22" selection-end-line="85" selection-end-column="22" />
         </state>
       </provider>
     </entry>

@@ -83,7 +83,7 @@ export const groupDefinitions = {
   'Complete Unicode': ''
 };
 
-export const hangeul = {
+export const kanas = {
   'hiragana': {
     'h_group1': { characters: { 'あ': ['a'], 'い': ['i'], 'う': ['u'], 'え': ['e'], 'お': ['o'] } },
     'h_group2': { characters: { 'か': ['ka'], 'き': ['ki'], 'く': ['ku'], 'け': ['ke'], 'こ': ['ko'] } },
