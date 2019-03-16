@@ -9,7 +9,7 @@ class ChooseCharacters extends Component {
     errMsg : '',
     selectedGroups: this.props.selectedGroups,
     startIsVisible: true
-  }
+  };
 
   componentDidMount() {
     this.testIsStartVisible();

@@ -3,9 +3,10 @@ import {first, kanas, last} from '../../data/hangeul';
 import { quizSettings } from '../../data/quizSettings';
 import {
   findRomajisAtKanaKey,
-  arrayContains,
   cartesianProduct,
-  getRandomInt, getRomanization
+  getRandomInt,
+  getRomanization,
+  shuffle
 } from '../../data/helperFuncs';
 import './Question.scss';
 
@@ -35,6 +36,9 @@ class Question extends Component {
    *    identified (as usual) by their hexadecimal Unicode values.
    */
   getRandomSyllables(amount, include, exclude) {
+    console.log('amount: ' + amount);
+    console.log('include: ' + include);
+    console.log('exclude: ' + exclude);
     let randomSyllables = [];
     let romanizations = []; // Temp array, used for checking romanization clashes
     let desiredRandomSyllableAmount = amount;
@@ -71,99 +75,66 @@ class Question extends Component {
         randomSyllables.push(include[i]);
     }
 
+    shuffle(randomSyllables);
+    console.log(randomSyllables);
     return randomSyllables;
   }
 
+  /**
+   * Selects a syllable and some answer options, and set up the state to show them as the current question.
+   */
   setNewQuestion() {
+    // Pick a new question and syllables, based on the stage
     if (this.props.stage !== 4)
-      this.currentQuestionSyllables = this.getRandomSyllables(1, false, this.previousQuestion);
+      this.currentQuestion = this.getRandomSyllables(1, false, this.previousQuestion);
     else
-      this.currentQuestionSyllables = this.getRandomSyllables(3, false, this.previousQuestion);
-    this.setState({currentQuestion: this.currentQuestionSyllables});
-    this.setAnswerOptions();
-    this.setAllowedAnswers();
-    // console.log(this.currentQuestionSyllables);
-  }
+      this.currentQuestion = this.getRandomSyllables(3, false, this.previousQuestion);
 
-  setAnswerOptions() {
-    this.answerOptions = this.getRandomSyllables(3, this.currentQuestionSyllables[0], false);
-    this.setState({answerOptions: this.answerOptions});
-    // console.log(this.answerOptions);
-  }
+    // Pick some syllables as options for answers
+    // TODO: Support stage 4?
+    this.answerOptions = this.getRandomSyllables(3, this.currentQuestion, false);
 
-  setAllowedAnswers() {
-    // console.log(this.currentQuestionSyllables);
+    this.setState({
+      currentQuestion: this.currentQuestion,
+      answerOptions: this.answerOptions
+    });
+
+    // Determine which of the answer options are acceptable answers
     this.allowedAnswers = [];
-    if(this.props.stage==1 || this.props.stage==3)
-      this.allowedAnswers = findRomajisAtKanaKey(this.currentQuestionSyllables, kanas);
-    else if(this.props.stage==2)
-      this.allowedAnswers = this.currentQuestionSyllables;
-    else if(this.props.stage==4) {
+    if (this.props.stage === 1 || this.props.stage === 3) // Answers for stages 1 and 3 are romanizations
+      this.allowedAnswers = this.currentQuestion.map(s => getRomanization(s));
+    else if (this.props.stage === 2) // Answers for stage 2 are the Hangeul syllables
+      this.allowedAnswers = this.currentQuestion;
+    else if (this.props.stage === 4) { // Answers for stage 4 are ... TODO
       let tempAllowedAnswers = [];
-
-      this.currentQuestionSyllables.forEach(key => {
-        tempAllowedAnswers.push(findRomajisAtKanaKey(key, kanas));
-      });
-
-      cartesianProduct(tempAllowedAnswers).forEach(answer => {
-        this.allowedAnswers.push(answer.join(''));
-      });
+      this.currentQuestion.forEach(key => tempAllowedAnswers.push(findRomajisAtKanaKey(key, kanas)));
+      cartesianProduct(tempAllowedAnswers).forEach(answer => this.allowedAnswers.push(answer.join('')));
     }
-    // console.log(this.allowedAnswers);
-  }
-
-  handleAnswer = answer => {
-    if(this.props.stage<=2) document.activeElement.blur(); // reset answer button's :active
-    this.previousQuestion = this.currentQuestionSyllables;
-    this.setState({previousQuestion: this.previousQuestion});
-    this.previousAnswer = answer;
-    this.setState({previousAnswer: this.previousAnswer});
-    this.previousAllowedAnswers = this.allowedAnswers;
-    if(this.isInAllowedAnswers(this.previousAnswer))
-      this.stageProgress = this.stageProgress+1;
-    else
-      this.stageProgress = this.stageProgress > 0 ? this.stageProgress - 1 : 0;
-    this.setState({stageProgress: this.stageProgress});
-    if(this.stageProgress >= quizSettings.stageLength[this.props.stage] && !this.props.isLocked) {
-      setTimeout(() => { this.props.handlehStageUp() }, 300);
-    }
-    else
-      this.setNewQuestion();
-  };
-
-  initializeCharacters() {
-    this.previousQuestion = '';
-    this.previousAnswer = '';
-    this.stageProgress = 0;
-        // do we want to include this group?
-        //if(arrayContains(groupName, this.props.decidedGroups)) {
-        //}
   }
 
   getAnswerType() {
-    if(this.props.stage==2) return 'kana';
-    else return 'romaji';
+    if (this.props.stage === 2) return 'hangeul';
+    else return 'romanization';
   }
 
   getShowableQuestion() {
-    if(this.getAnswerType()=='kana')
-      return findRomajisAtKanaKey(this.state.currentQuestion, kanas)[0];
-    else return this.state.currentQuestion;
+    if (this.getAnswerType() === 'hangeul')
+      return this.state.currentQuestion.map(s => getRomanization((s))).join(' ');
+    else return this.state.currentQuestion.map(s => String.fromCharCode(parseInt(s, 16))).join();
   }
 
   getPreviousResult() {
-    let resultString='';
-    // console.log(this.previousAnswer);
-    if(this.previousQuestion=='')
-      resultString = <div className="previous-result none">Let's go! Which character is this?</div>
+    let resultString = '';
+    if (this.previousQuestion === '')
+      resultString = <div className="previous-result none">Let's go! Which character is this?</div>;
     else {
       let rightAnswer = (
-        this.props.stage==2 ?
+        this.props.stage === 2 ?
           findRomajisAtKanaKey(this.previousQuestion, kanas)[0]
           : this.previousQuestion.join('')
         )+' = '+ this.previousAllowedAnswers[0];
 
-      if(this.isInAllowedAnswers(this.previousAnswer))
+      if (this.previousAllowedAnswers.includes(this.previousAnswer))
         resultString = (
           <div className="previous-result correct" title="Correct answer!">
             <span className="pull-left glyphicon glyphicon-none"/>{rightAnswer}<span className="pull-right glyphicon glyphicon-ok"/>
@@ -179,28 +150,52 @@ class Question extends Component {
     return resultString;
   }
 
-  isInAllowedAnswers(previousAnswer) {
-    // console.log(previousAnswer);
-    // console.log(this.allowedAnswers);
-    if(arrayContains(previousAnswer, this.previousAllowedAnswers))
-      return true;
-    else return false;
-  }
+  handleAnswer = answer => {
+    if (this.props.stage <= 2)
+      document.activeElement.blur(); // reset answer button's :active
+    this.previousQuestion = this.currentQuestion;
+    this.previousAnswer = answer;
+    this.previousAllowedAnswers = this.allowedAnswers;
+
+    // Determine if the correct answer was chosen and adjust the stage progress
+    if (this.previousAllowedAnswers.includes(this.previousAnswer))
+      this.stageProgress = this.stageProgress + 1;
+    else
+      this.stageProgress = this.stageProgress > 0 ? this.stageProgress - 1 : 0;
+
+    this.setState({
+      previousAnswer: this.previousAnswer,
+      previousQuestion: this.previousQuestion,
+      stageProgress: this.stageProgress
+    });
+
+    if (this.stageProgress >= quizSettings.stageLength[this.props.stage] && !this.props.isLocked)
+      setTimeout(() => { this.props.handleStageUp() }, 300);
+    else
+      this.setNewQuestion();
+  };
 
   handleAnswerChange = e => {
     this.setState({currentAnswer: e.target.value.replace(/\s+/g, '')});
-  }
+  };
 
   handleSubmit = e => {
     e.preventDefault();
-    if(this.state.currentAnswer!='') {
+    if (this.state.currentAnswer !== '') {
       this.handleAnswer(this.state.currentAnswer.toLowerCase());
       this.setState({currentAnswer: ''});
     }
-  }
+  };
 
   componentWillMount() {
-    this.initializeCharacters();
+    this.previousQuestion = '';
+    this.previousAnswer = '';
+    this.stageProgress = 0;
+
+    // TODO: Don't include any syllables outside the chosen groups
+    // (See getRandomSyllables and the TODO there)
+    //if(arrayContains(groupName, this.props.decidedGroups)) {
+    //}
   }
 
   componentDidMount() {
@@ -219,7 +214,7 @@ class Question extends Component {
         <div className="big-character">{this.getShowableQuestion()}</div>
         <div className="answer-container">
           {
-            this.props.stage<3 ?
+            this.props.stage < 3 ?
               this.state.answerOptions.map((answer, idx) => {
                 return <AnswerButton answer={answer}
                   className={btnClass}
@@ -248,20 +243,22 @@ class Question extends Component {
       </div>
     );
   }
-
 }
 
 class AnswerButton extends Component {
   getShowableAnswer() {
-    if(this.props.answertype=='romaji')
-      return findRomajisAtKanaKey(this.props.answer, kanas)[0];
-    else return this.props.answer;
+    if (this.props.answertype === 'romanization')
+      return getRomanization(this.props.answer);
+    else return String.fromCharCode(parseInt(this.props.answer, 16));
   }
 
   render() {
     return (
-      <button className={this.props.className} onClick={()=>this.props.handleAnswer(this.getShowableAnswer())}>{this.getShowableAnswer()}</button>
+      <button className={this.props.className} onClick={() => this.props.handleAnswer(this.getShowableAnswer())}>
+        {this.getShowableAnswer()}
+      </button>
     );
   }
 }
+
 export default Question;

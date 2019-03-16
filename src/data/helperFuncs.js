@@ -1,12 +1,4 @@
-import {finalConsonants, first, initialConsonants, vowels} from "./hangeul";
-
-export function arrayContains(needle, haystack) {
-    return (haystack.indexOf(needle) > -1) ? true : false;
-}
-
-export function addDecimalToHex(hex, decimalToAdd) {
-  return (parseInt(hex, 16) + parseInt(decimalToAdd.toString())).toString(16);
-}
+import {finalConsonants, first, initialConsonants, romanizations, vowels} from "./hangeul";
 
 /**
  * Returns the romanization of the supplied syllable, identified (as usual) by its hexadecimal
@@ -37,28 +29,27 @@ export function getRomanization(syllable) {
   let finalConsonant = finalConsonants[idxFinalConsonant];
   console.log('Final consonant: ' + finalConsonant);
 
+  return romanizations[initialConsonant][0] + romanizations[vowel][0] + romanizations[finalConsonant][0];
+}
 
-  // initialConsonants 19, vowels 21, finalConsonants 28
-  // 0  = 0th IC, 0th V, 0th FC
-  // 1  = 0th IC, 0th V, 1st FC
-  // 2  = 0th IC, 0th V, 2nd FC
-  // 27 = 0th IC, 0th V, 27th FC
+/**
+ * Performs the Fisher-Yates shuffle in place on the specified array.
+ */
+export function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
 
-  // 28 = 0th IC, 1st V, 0th FC
-  // 29 = 0th IC, 1st V, 1st FC
-  // 30 = 0th IC, 1st V, 2nd FC
-  // 55 = 0th IC, 1st V, 27th FC
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
 
-  // 56 = 0th IC, 2nd V, 0th FC
-  // 57 = 0th IC, 2nd V, 1st FC
-  // 58 = 0th IC, 2nd V, 2nd FC
-  // 83 = 0th IC, 2nd V, 27th FC
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
 
-  // 587 = 0th IC, 20th V, 27th FC
-
-  // 588 = 1st IC, 0th V, 0th FC
-
-  return 'han';
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
 }
 
 /**
