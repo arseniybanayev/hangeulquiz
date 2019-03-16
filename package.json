@@ -1,7 +1,7 @@
 {
-  "name": "kanaquiz",
+  "name": "hangeul-soy",
   "version": "2.1.0",
-  "description": "Application for studying hiragana & katakana characters.",
+  "description": "Application for studying Hangeul syllables.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anzzstuff/kanaquiz.git"
+    "url": "git+https://github.com/arseniybanayev/hangeul-soy.git"
   },
   "author": "Antti Pilto",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/anzzstuff/kanaquiz/issues"
+    "url": "https://github.com/arseniybanayev/hangeul-soy/issues"
   },
-  "homepage": "https://github.com/anzzstuff/kanaquiz#readme",
+  "homepage": "https://github.com/arseniybanayev/hangeul-soy#readme",
   "browserslist": [
     ">0.25%",
     "not dead"
