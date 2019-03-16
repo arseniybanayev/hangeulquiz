@@ -1,5 +1,5 @@
-# Hangeul Quiz
-Hangeul Quiz made with React.js.
+# Hangeul.soy
+Hangeul quiz made with React.js.
 
 See live at https://hangeul.soy/
 
