@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
-import { kanas } from '../../data/hangeul';
+import {first, kanas, last} from '../../data/hangeul';
 import { quizSettings } from '../../data/quizSettings';
-import { findRomajisAtKanaKey, removeFromArray, arrayContains, shuffle, cartesianProduct } from '../../data/helperFuncs';
+import {
+  findRomajisAtKanaKey,
+  arrayContains,
+  cartesianProduct,
+  getRandomInt, getRomanization
+} from '../../data/helperFuncs';
 import './Question.scss';
 
 class Question extends Component {
@@ -14,83 +19,89 @@ class Question extends Component {
     stageProgress: 0
   };
 
-  getRandomKanas(amount, include, exclude) {
-    let randomizedKanas = this.askableKanaKeys.slice();
+  /**
+   * Selects and returns an array of  number of random syllables, identified (as usual) by their
+   * hexadecimal Unicode value.
+   *
+   * @param amount
+   *    Number of random syllables to return in total, after taking into account `include` and `exclude`.
+   *
+   * @param include
+   *    An optional array that includes syllables that should be included in the returned array,
+   *    identified (as usual) by their hexadecimal Unicode values.
+   *
+   * @param exclude
+   *    An optional array that includes syllables that should be excluded from the returned array,
+   *    identified (as usual) by their hexadecimal Unicode values.
+   */
+  getRandomSyllables(amount, include, exclude) {
+    let randomSyllables = [];
+    let romanizations = []; // Temp array, used for checking romanization clashes
+    let desiredRandomSyllableAmount = amount;
+    if (include)
+      desiredRandomSyllableAmount -= include.length;
 
-    if(exclude && exclude.length > 0) {
-      // we're excluding previous question when deciding a new question
-      randomizedKanas = removeFromArray(exclude, randomizedKanas);
+    while (randomSyllables.length < desiredRandomSyllableAmount) {
+      // Pick a random syllable from `first` to `last`
+      let randomSyllable = getRandomInt(parseInt(first, 16), parseInt(last, 16)).toString(16);
+
+      // TODO: Don't include any syllables outside the chosen groups
+
+      // Don't include the specified syllables in `exclude`
+      if (exclude && exclude.includes(randomSyllable))
+        continue;
+
+      // Don't include any already-chosen syllables
+      if (randomSyllables.includes(randomSyllable))
+        continue;
+
+      // Don't include any syllables that clash in romanization with already chosen syllables
+      let romanization = getRomanization(randomSyllable);
+      if (romanizations.includes(romanization))
+        continue;
+
+      // Good to go!
+      randomSyllables.push(randomSyllable);
+      romanizations.push(romanization);
     }
 
-    if(include && include.length > 0) {
-      // we arrive here when we're deciding answer options (included = currentQuestion)
-
-      // remove included kana
-      randomizedKanas = removeFromArray(include, randomizedKanas);
-      shuffle(randomizedKanas);
-
-      // cut the size to make looping quicker
-      randomizedKanas = randomizedKanas.slice(0,20);
-
-      // let's remove kanas that have the same answer as included
-      let searchFor = findRomajisAtKanaKey(include, kanas)[0];
-      randomizedKanas = randomizedKanas.filter(character => {
-        return searchFor!=findRomajisAtKanaKey(character, kanas)[0];
-      });
-
-      // now let's remove "duplicate" kanas (if two kanas have same answers)
-      let tempRandomizedKanas = randomizedKanas.slice();
-      randomizedKanas = randomizedKanas.filter(r => {
-        let dupeFound = false;
-        searchFor = findRomajisAtKanaKey(r, kanas)[0];
-        tempRandomizedKanas.shift();
-        tempRandomizedKanas.forEach(w => {
-          if(findRomajisAtKanaKey(w, kanas)[0]==searchFor)
-            dupeFound = true;
-        });
-        return !dupeFound;
-      });
-
-      // alright, let's cut the array and add included to the end
-      randomizedKanas = randomizedKanas.slice(0, amount-1); // -1 so we have room to add included
-      randomizedKanas.push(include);
-      shuffle(randomizedKanas);
+    // Add the `include` syllables
+    if (include) {
+      for (var i = 0; i < include.length; i++)
+        randomSyllables.push(include[i]);
     }
-    else {
-      shuffle(randomizedKanas);
-      randomizedKanas = randomizedKanas.slice(0, amount);
-    }
-    return randomizedKanas;
+
+    return randomSyllables;
   }
 
   setNewQuestion() {
-    if(this.props.stage!=4)
-      this.currentQuestion = this.getRandomKanas(1, false, this.previousQuestion);
+    if (this.props.stage !== 4)
+      this.currentQuestionSyllables = this.getRandomSyllables(1, false, this.previousQuestion);
     else
-      this.currentQuestion = this.getRandomKanas(3, false, this.previousQuestion);
-    this.setState({currentQuestion: this.currentQuestion});
+      this.currentQuestionSyllables = this.getRandomSyllables(3, false, this.previousQuestion);
+    this.setState({currentQuestion: this.currentQuestionSyllables});
     this.setAnswerOptions();
     this.setAllowedAnswers();
-    // console.log(this.currentQuestion);
+    // console.log(this.currentQuestionSyllables);
   }
 
   setAnswerOptions() {
-    this.answerOptions = this.getRandomKanas(3, this.currentQuestion[0], false);
+    this.answerOptions = this.getRandomSyllables(3, this.currentQuestionSyllables[0], false);
     this.setState({answerOptions: this.answerOptions});
     // console.log(this.answerOptions);
   }
 
   setAllowedAnswers() {
-    // console.log(this.currentQuestion);
+    // console.log(this.currentQuestionSyllables);
     this.allowedAnswers = [];
     if(this.props.stage==1 || this.props.stage==3)
-      this.allowedAnswers = findRomajisAtKanaKey(this.currentQuestion, kanas);
+      this.allowedAnswers = findRomajisAtKanaKey(this.currentQuestionSyllables, kanas);
     else if(this.props.stage==2)
-      this.allowedAnswers = this.currentQuestion;
+      this.allowedAnswers = this.currentQuestionSyllables;
     else if(this.props.stage==4) {
       let tempAllowedAnswers = [];
 
-      this.currentQuestion.forEach(key => {
+      this.currentQuestionSyllables.forEach(key => {
         tempAllowedAnswers.push(findRomajisAtKanaKey(key, kanas));
       });
 
@@ -103,7 +114,7 @@ class Question extends Component {
 
   handleAnswer = answer => {
     if(this.props.stage<=2) document.activeElement.blur(); // reset answer button's :active
-    this.previousQuestion = this.currentQuestion;
+    this.previousQuestion = this.currentQuestionSyllables;
     this.setState({previousQuestion: this.previousQuestion});
     this.previousAnswer = answer;
     this.setState({previousAnswer: this.previousAnswer});
@@ -114,36 +125,19 @@ class Question extends Component {
       this.stageProgress = this.stageProgress > 0 ? this.stageProgress - 1 : 0;
     this.setState({stageProgress: this.stageProgress});
     if(this.stageProgress >= quizSettings.stageLength[this.props.stage] && !this.props.isLocked) {
-      setTimeout(() => { this.props.handleStageUp() }, 300);
+      setTimeout(() => { this.props.handlehStageUp() }, 300);
     }
     else
       this.setNewQuestion();
   };
 
   initializeCharacters() {
-    this.askableKanas = {};
-    this.askableKanaKeys = [];
-    this.askableRomajis = [];
     this.previousQuestion = '';
     this.previousAnswer = '';
     this.stageProgress = 0;
-    Object.keys(kanas).forEach(whichKana => {
-      // console.log(whichKana); // 'hiragana' or 'katakana'
-      Object.keys(kanas[whichKana]).forEach(groupName => {
-        // console.log(groupName); // 'h_group1', ...
         // do we want to include this group?
-        if(arrayContains(groupName, this.props.decidedGroups)) {
-          // let's merge the group to our askableKanas
-          this.askableKanas = Object.assign(this.askableKanas, kanas[whichKana][groupName]['characters']);
-          Object.keys(kanas[whichKana][groupName]['characters']).forEach(key => {
-            // let's add all askable kana keys to array
-            this.askableKanaKeys.push(key);
-            this.askableRomajis.push(kanas[whichKana][groupName]['characters'][key][0]);
-          });
-        }
-      });
-    });
-    // console.log(this.askableKanas);
+        //if(arrayContains(groupName, this.props.decidedGroups)) {
+        //}
   }
 
   getAnswerType() {
@@ -172,13 +166,13 @@ class Question extends Component {
       if(this.isInAllowedAnswers(this.previousAnswer))
         resultString = (
           <div className="previous-result correct" title="Correct answer!">
-            <span className="pull-left glyphicon glyphicon-none"></span>{rightAnswer}<span className="pull-right glyphicon glyphicon-ok"></span>
+            <span className="pull-left glyphicon glyphicon-none"/>{rightAnswer}<span className="pull-right glyphicon glyphicon-ok"/>
           </div>
         );
       else
         resultString = (
           <div className="previous-result wrong" title="Wrong answer!">
-            <span className="pull-left glyphicon glyphicon-none"></span>{rightAnswer}<span className="pull-right glyphicon glyphicon-remove"></span>
+            <span className="pull-left glyphicon glyphicon-none"/>{rightAnswer}<span className="pull-right glyphicon glyphicon-remove"/>
           </div>
         );
     }
@@ -218,7 +212,7 @@ class Question extends Component {
     if ('ontouchstart' in window)
       btnClass += " no-hover"; // disables hover effect on touch screens
     let stageProgressPercentage = Math.round((this.state.stageProgress/quizSettings.stageLength[this.props.stage])*100)+'%';
-    let stageProgressPercentageStyle = { width: stageProgressPercentage }
+    let stageProgressPercentageStyle = { width: stageProgressPercentage };
     return (
       <div className="text-center question col-xs-12">
         {this.getPreviousResult()}
