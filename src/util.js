@@ -123,27 +123,28 @@ export function lookupRulesByName(ruleNames) {
 export function getRandomSyllables(amount, allowedSyllableHexes, includeSyllableHexes, excludeSyllableHexes) {
   let randomSyllableHexes = [];
   let romanizations = []; // Temp array, used for checking romanization clashes
-  let desiredRandomSyllableAmount = amount;
 
-  // If an `include` array is specified, then look for that many fewer random syllables
-  // and try to get ones that are similar, to make this hard
+  // If an `include` array is specified, then start with them, and
+  // filter the allowed syllables to just similar ones, to make this hard
   if (includeSyllableHexes) {
-    desiredRandomSyllableAmount -= includeSyllableHexes.length;
-    let target = includeSyllableHexes[0]; // Pick the first, if there are multiple. TODO: Sort by product of all distances
-    let targetLetters = getIndividualLettersFromHex(target);
-    let closeAllowedSyllableHexes = allowedSyllableHexes
+    includeSyllableHexes.forEach(s => {
+      randomSyllableHexes.push(s);
+      romanizations.push(getRomanization(s));
+    });
+
+    let targetLetters = getIndividualLettersFromHex(includeSyllableHexes[0]); // Note this just picks the first
+    allowedSyllableHexes = allowedSyllableHexes
       .filter(s => {
         let letters = getIndividualLettersFromHex(s);
-        if ((targetLetters[2] === '') !== (letters[2] == ''))
+        if ((targetLetters[2] === '') !== (letters[2] === ''))
             return false;
         if (intersection([letters, targetLetters]).length === 2)
           return true;
         return false;
       });
-    allowedSyllableHexes = closeAllowedSyllableHexes;
   }
 
-  while (randomSyllableHexes.length < desiredRandomSyllableAmount) {
+  while (randomSyllableHexes.length < amount) {
     let randomSyllableHex = allowedSyllableHexes[getRandomInt(0, allowedSyllableHexes.length - 1)].toString(16);
 
     // Don't include the specified syllables in `excludeSyllableHexes`
@@ -162,12 +163,6 @@ export function getRandomSyllables(amount, allowedSyllableHexes, includeSyllable
     // Good to go!
     randomSyllableHexes.push(randomSyllableHex);
     romanizations.push(romanization);
-  }
-
-  // Add the `includeSyllableHexes` syllables
-  if (includeSyllableHexes) {
-    for (let i = 0; i < includeSyllableHexes.length; i++)
-      randomSyllableHexes.push(includeSyllableHexes[i]);
   }
 
   shuffle(randomSyllableHexes);
