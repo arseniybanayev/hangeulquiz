@@ -2,6 +2,7 @@ const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const path = require('path');
 
 module.exports = {
+  entry: 'src/index.js',
   context: __dirname,
   output: {
     path: path.resolve(__dirname, './dist'),
