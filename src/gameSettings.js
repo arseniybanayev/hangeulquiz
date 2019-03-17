@@ -1,7 +1,7 @@
 export const gameSettings = {
   stageLength : {
-    1: 30,
-    2: 30,
-    3: 30
+    1: 20,
+    2: 20,
+    3: 20
   }
 };

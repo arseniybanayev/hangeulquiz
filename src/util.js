@@ -124,8 +124,24 @@ export function getRandomSyllables(amount, allowedSyllableHexes, includeSyllable
   let randomSyllableHexes = [];
   let romanizations = []; // Temp array, used for checking romanization clashes
   let desiredRandomSyllableAmount = amount;
-  if (includeSyllableHexes)
+
+  // If an `include` array is specified, then look for that many fewer random syllables
+  // and try to get ones that are similar, to make this hard
+  if (includeSyllableHexes) {
     desiredRandomSyllableAmount -= includeSyllableHexes.length;
+    let target = includeSyllableHexes[0]; // Pick the first, if there are multiple. TODO: Sort by product of all distances
+    let targetLetters = getIndividualLettersFromHex(target);
+    let closeAllowedSyllableHexes = allowedSyllableHexes
+      .filter(s => {
+        let letters = getIndividualLettersFromHex(s);
+        if ((targetLetters[2] === '') !== (letters[2] == ''))
+            return false;
+        if (intersection([letters, targetLetters]).length === 2)
+          return true;
+        return false;
+      });
+    allowedSyllableHexes = closeAllowedSyllableHexes;
+  }
 
   while (randomSyllableHexes.length < desiredRandomSyllableAmount) {
     let randomSyllableHex = allowedSyllableHexes[getRandomInt(0, allowedSyllableHexes.length - 1)].toString(16);

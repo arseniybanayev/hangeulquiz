@@ -21,10 +21,16 @@ export default class Question extends Component {
    * Selects a syllable and some answer options, and set up the state to show them as the current question.
    */
   setNewQuestion() {
-    this.currentQuestion = getRandomSyllables(1, this.props.allowedSyllables, false, this.previousQuestion);
+    this.currentQuestion = getRandomSyllables(1,
+      this.props.allowedSyllables,
+      false,
+      this.previousQuestion);
 
     // Pick some syllables as options for answers
-    this.answerOptions = getRandomSyllables(3, this.props.allowedSyllables, this.currentQuestion, false);
+    this.answerOptions = getRandomSyllables(5,
+      this.props.allowedSyllables,
+      this.currentQuestion,
+      false);
 
     this.setState({
       currentQuestion: this.currentQuestion,
@@ -133,7 +139,7 @@ export default class Question extends Component {
     let btnClass = "btn btn-default answer-button";
     if ('ontouchstart' in window)
       btnClass += " no-hover"; // disables hover effect on touch screens
-    let stageProgressPercentage = Math.round((this.state.stageProgress/gameSettings.stageLength[this.props.stage])*100)+'%';
+    let stageProgressPercentage = Math.round((this.state.stageProgress / gameSettings.stageLength[this.props.stage]) * 100) + '%';
     let stageProgressPercentageStyle = { width: stageProgressPercentage };
     return (
       <div className="text-center question col-xs-12">
