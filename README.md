@@ -1,5 +1,5 @@
 # Hangeul.soy
-Hangeul quiz made with React.js, Webpack and Express.
+Hangeul syllable recognition game, made with React.js, Webpack, Express and love.
 
 See live at http://www.hangeul.soy/
 
