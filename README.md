@@ -8,7 +8,7 @@ Install dependencies
 2. `npm audit fix` (because of some vulnerability)
 
 Development:
-1. `npm start`
+1. `npm dev`
 2. Go to http://localhost:8080
 
 Production: `npm run build`
