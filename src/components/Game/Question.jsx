@@ -10,7 +10,10 @@ import {
 } from '../../data/helperFuncs';
 import './Question.scss';
 
-class Question extends Component {
+/**
+ * Self-explanatory. Also displays itself.
+ */
+export default class Question extends Component {
   state = {
     previousQuestion: [],
     previousAnswer: '',
@@ -260,5 +263,3 @@ class AnswerButton extends Component {
     );
   }
 }
-
-export default Question;

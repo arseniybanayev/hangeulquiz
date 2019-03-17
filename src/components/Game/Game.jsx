@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
-import { kanas } from '../../data/hangeul';
 import ShowStage from './ShowStage';
 import Question from './Question';
 
-class Game extends Component {
+/**
+ * Keeps track of current game stage and handles display of either the
+ * stage # screen or the question screen. (The stage # screen will call
+ * a callback on this class to show the question screen.)
+ */
+export default class Game extends Component {
   state = { showScreen: '' };
 
   componentWillMount() {
@@ -28,16 +32,20 @@ class Game extends Component {
     return (
       <div>
         {
-          this.state.showScreen==='stage' &&
-            <ShowStage lockStage={this.lockStage} handleShowQuestion={this.showQuestion} handleEndGame={this.props.handleEndGame} stage={this.props.stage} />
+          this.state.showScreen === 'stage' &&
+            <ShowStage lockStage={this.lockStage}
+                       handleShowQuestion={this.showQuestion}
+                       handleEndGame={this.props.handleEndGame}
+                       stage={this.props.stage} />
         }
         {
-          this.state.showScreen==='question' &&
-            <Question isLocked={this.props.isLocked} handleStageUp={this.stageUp} stage={this.props.stage} decidedGroups={this.props.decidedGroups} />
+          this.state.showScreen === 'question' &&
+            <Question isLocked={this.props.isLocked}
+                      handleStageUp={this.stageUp}
+                      stage={this.props.stage}
+                      decidedGroups={this.props.decidedGroups} />
         }
       </div>
     );
   }
 }
-
-export default Game;

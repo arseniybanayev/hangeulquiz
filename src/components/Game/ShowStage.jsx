@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 import './ShowStage.scss';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { CSSTransition } from 'react-transition-group';
 
-class ShowStage extends Component {
+/**
+ * Displays something that shows the stage # and fades out, telling the Game
+ * component when it fully fades out.
+ */
+export default class ShowStage extends Component {
   state = {
     show: false,
     entered: false
-  }
+  };
 
   componentDidMount() {
     this.setState({show: true});
-    if(this.props.stage <= 4)
+    if (this.props.stage <= 4)
       this.timeoutID = setTimeout(this.removeStage, 1200); // how soon we start fading out (1500)
     window.scrollTo(0,0);
   }
@@ -23,17 +27,17 @@ class ShowStage extends Component {
     this.setState({show: false});
     clearTimeout(this.timeoutID);
     this.timeoutID = setTimeout(this.props.handleShowQuestion, 1000) // how soon we go to question (1000)
-  }
+  };
 
   showStage() {
     let stageDescription;
     let stageSecondaryDescription = false;
 
-    if(this.props.stage==1) stageDescription = 'Choose one';
-    else if(this.props.stage==2) { stageDescription = 'Choose one'; stageSecondaryDescription = 'Reverse'; }
-    else if(this.props.stage==3) stageDescription = 'Write the answer';
-    else if(this.props.stage==4) { stageDescription = 'Write the answer'; stageSecondaryDescription = 'Three at once'; }
-    else if(this.props.stage==5)
+    if (this.props.stage === 1) stageDescription = 'Choose one';
+    else if (this.props.stage === 2) { stageDescription = 'Choose one'; stageSecondaryDescription = 'Reverse'; }
+    else if (this.props.stage === 3) stageDescription = 'Write the answer';
+    else if (this.props.stage === 4) { stageDescription = 'Write the answer'; stageSecondaryDescription = 'Three at once'; }
+    else if (this.props.stage === 5)
       return (
         <div className="text-center show-end">
           <h1>Congratulations!</h1>
@@ -64,5 +68,3 @@ class ShowStage extends Component {
     );
   }
 }
-
-export default ShowStage;

@@ -3,9 +3,10 @@ import './App.scss';
 import Navbar from '../Navbar/Navbar';
 import GameContainer from '../GameContainer/GameContainer';
 
-const options = {};
-
-class App extends Component {
+/**
+ * Main entry, has a GameContainer and other visual/HTML-only components.
+ */
+export default class App extends Component {
   state = { gameState: 'chooseCharacters' };
 
   startGame = () => {
@@ -17,7 +18,6 @@ class App extends Component {
   };
 
   componentWillUpdate(nextProps, nextState) {
-    // This is primarily for demo site purposes. Hides #footer when game is on.
     if (document.getElementById('footer')) {
       if (nextState.gameState === 'chooseCharacters')
         document.getElementById('footer').style.display = "block";
@@ -51,5 +51,3 @@ class App extends Component {
     )
   }
 }
-
-export default App;

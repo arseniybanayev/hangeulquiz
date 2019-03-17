@@ -4,7 +4,10 @@ import {groupDefinitions} from '../../data/hangeul';
 import './ChooseCharacters.scss';
 import CharacterGroup from './CharacterGroup';
 
-class ChooseCharacters extends Component {
+/**
+ * View and controller of character groups that can be selected for the game.
+ */
+export default class ChooseCharacters extends Component {
   state = {
     errMsg : '',
     selectedGroups: this.props.selectedGroups,
@@ -50,7 +53,7 @@ class ChooseCharacters extends Component {
   }
 
   isSelected(groupName) {
-    return this.getIndex(groupName) > -1 ? true : false;
+    return this.getIndex(groupName) > -1;
   }
 
   removeSelect(groupName) {
@@ -158,7 +161,7 @@ class ChooseCharacters extends Component {
           </div>
           <div className="col-sm-offset-3 col-sm-6 col-xs-12 text-center">
             {
-              this.state.errMsg != '' &&
+              this.state.errMsg !== '' &&
                 <div className="error-message">{this.state.errMsg}</div>
             }
             <button ref={c => this.startRef = c} className="btn btn-danger startgame-button" onClick={() => this.startGame()}>Start the Quiz!</button>
@@ -174,5 +177,3 @@ class ChooseCharacters extends Component {
     );
   }
 }
-
-export default ChooseCharacters;

@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 
-class CharacterGroup extends Component {
-  state = { shownChars: '' }
+/**
+ * A set of restrictions on allowed questions. Intended to control what syllables appear
+ * in the game by difficulty or frequency/commonness.
+ */
+export default class CharacterGroup extends Component {
+  state = { shownChars: '' };
 
   changeShownChars(newString) {
     this.setState({shownChars: newString})
@@ -16,7 +20,7 @@ class CharacterGroup extends Component {
     });
     strRomajiCharacters = strRomajiCharacters.slice(0, -2);
     strKanaCharacters = strKanaCharacters.slice(0, -2);
-    if(whichKana=='romaji') return strRomajiCharacters;
+    if (whichKana === 'romaji') return strRomajiCharacters;
     else return strKanaCharacters;
   }
 
@@ -48,5 +52,3 @@ class CharacterGroup extends Component {
     );
   }
 }
-
-export default CharacterGroup;
