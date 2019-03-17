@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
-import {first, kanas, last} from '../../data/hangeul';
-import { quizSettings } from '../../data/quizSettings';
+import { quizSettings } from '../../quizSettings';
 import {
-  findRomajisAtKanaKey,
-  cartesianProduct,
-  getRandomInt,
-  getRomanization,
-  shuffle
-} from '../../data/helperFuncs';
+  getRandomSyllables,
+  getRomanization
+} from '../../util';
 import './Question.scss';
 
 /**
@@ -15,8 +11,6 @@ import './Question.scss';
  */
 export default class Question extends Component {
   state = {
-    previousQuestion: [],
-    previousAnswer: '',
     currentAnswer: '',
     currentQuestion: [],
     answerOptions: [],
@@ -24,78 +18,14 @@ export default class Question extends Component {
   };
 
   /**
-   * Selects and returns an array of  number of random syllables, identified (as usual) by their
-   * hexadecimal Unicode value.
-   *
-   * @param amount
-   *    Number of random syllables to return in total, after taking into account `include` and `exclude`.
-   *
-   * @param include
-   *    An optional array that includes syllables that should be included in the returned array,
-   *    identified (as usual) by their hexadecimal Unicode values.
-   *
-   * @param exclude
-   *    An optional array that includes syllables that should be excluded from the returned array,
-   *    identified (as usual) by their hexadecimal Unicode values.
-   */
-  getRandomSyllables(amount, include, exclude) {
-    console.log('amount: ' + amount);
-    console.log('include: ' + include);
-    console.log('exclude: ' + exclude);
-    let randomSyllables = [];
-    let romanizations = []; // Temp array, used for checking romanization clashes
-    let desiredRandomSyllableAmount = amount;
-    if (include)
-      desiredRandomSyllableAmount -= include.length;
-
-    while (randomSyllables.length < desiredRandomSyllableAmount) {
-      // Pick a random syllable from `first` to `last`
-      let randomSyllable = getRandomInt(parseInt(first, 16), parseInt(last, 16)).toString(16);
-
-      // TODO: Don't include any syllables outside the chosen groups
-
-      // Don't include the specified syllables in `exclude`
-      if (exclude && exclude.includes(randomSyllable))
-        continue;
-
-      // Don't include any already-chosen syllables
-      if (randomSyllables.includes(randomSyllable))
-        continue;
-
-      // Don't include any syllables that clash in romanization with already chosen syllables
-      let romanization = getRomanization(randomSyllable);
-      if (romanizations.includes(romanization))
-        continue;
-
-      // Good to go!
-      randomSyllables.push(randomSyllable);
-      romanizations.push(romanization);
-    }
-
-    // Add the `include` syllables
-    if (include) {
-      for (var i = 0; i < include.length; i++)
-        randomSyllables.push(include[i]);
-    }
-
-    shuffle(randomSyllables);
-    console.log(randomSyllables);
-    return randomSyllables;
-  }
-
-  /**
    * Selects a syllable and some answer options, and set up the state to show them as the current question.
    */
   setNewQuestion() {
-    // Pick a new question and syllables, based on the stage
-    if (this.props.stage !== 4)
-      this.currentQuestion = this.getRandomSyllables(1, false, this.previousQuestion);
-    else
-      this.currentQuestion = this.getRandomSyllables(3, false, this.previousQuestion);
+    // Pick a new question and syllables
+    this.currentQuestion = getRandomSyllables(1, false, this.previousQuestion);
 
     // Pick some syllables as options for answers
-    // TODO: Support stage 4?
-    this.answerOptions = this.getRandomSyllables(3, this.currentQuestion, false);
+    this.answerOptions = getRandomSyllables(3, this.currentQuestion, false);
 
     this.setState({
       currentQuestion: this.currentQuestion,
@@ -103,41 +33,32 @@ export default class Question extends Component {
     });
 
     // Determine which of the answer options are acceptable answers
-    this.allowedAnswers = [];
+    this.correctAnswers = [];
     if (this.props.stage === 1 || this.props.stage === 3) // Answers for stages 1 and 3 are romanizations
-      this.allowedAnswers = this.currentQuestion.map(s => getRomanization(s));
+      this.correctAnswers = this.currentQuestion.map(s => getRomanization(s));
     else if (this.props.stage === 2) // Answers for stage 2 are the Hangeul syllables
-      this.allowedAnswers = this.currentQuestion;
-    else if (this.props.stage === 4) { // Answers for stage 4 are ... TODO
-      let tempAllowedAnswers = [];
-      this.currentQuestion.forEach(key => tempAllowedAnswers.push(findRomajisAtKanaKey(key, kanas)));
-      cartesianProduct(tempAllowedAnswers).forEach(answer => this.allowedAnswers.push(answer.join('')));
-    }
+      this.correctAnswers = this.currentQuestion;
   }
 
-  getAnswerType() {
-    if (this.props.stage === 2) return 'hangeul';
-    else return 'romanization';
+  getAnswerTypeForCurrentStage() {
+    if (this.props.stage === 2) return AnswerType.HANGEUL;
+    else return AnswerType.ROMANIZATION;
   }
 
-  getShowableQuestion() {
-    if (this.getAnswerType() === 'hangeul')
-      return this.state.currentQuestion.map(s => getRomanization((s))).join(' ');
-    else return this.state.currentQuestion.map(s => String.fromCharCode(parseInt(s, 16))).join();
-  }
+  getPreviousResultForDisplay() {
+    let resultString;
 
-  getPreviousResult() {
-    let resultString = '';
-    if (this.previousQuestion === '')
+    if (this.previousQuestion.length === 0) {
+      // In this case, there has not yet been a question, so show some helper text
       resultString = <div className="previous-result none">Let's go! Which character is this?</div>;
-    else {
-      let rightAnswer = (
-        this.props.stage === 2 ?
-          findRomajisAtKanaKey(this.previousQuestion, kanas)[0]
-          : this.previousQuestion.join('')
-        )+' = '+ this.previousAllowedAnswers[0];
+    } else {
+      // In this case, there has been a question and an answer already, so show a summary
+      let rightAnswer =
+        this.getQuestionTextForDisplay(this.previousQuestion)
+        + ' = '
+        +  this.previousCorrectAnswers[0];
 
-      if (this.previousAllowedAnswers.includes(this.previousAnswer))
+      if (this.previousCorrectAnswers.includes(this.previousChosenAnswer))
         resultString = (
           <div className="previous-result correct" title="Correct answer!">
             <span className="pull-left glyphicon glyphicon-none"/>{rightAnswer}<span className="pull-right glyphicon glyphicon-ok"/>
@@ -153,25 +74,34 @@ export default class Question extends Component {
     return resultString;
   }
 
-  handleAnswer = answer => {
+  getQuestionTextForDisplay(question) {
+    if (this.getAnswerTypeForCurrentStage() === AnswerType.HANGEUL)
+      return question.map(s => getRomanization((s))).join(' ');
+    else return question.map(s => String.fromCharCode(parseInt(s, 16))).join();
+  }
+
+  handleAnswer = chosenAnswer => {
+    // TODO Figure out what this does?
     if (this.props.stage <= 2)
       document.activeElement.blur(); // reset answer button's :active
-    this.previousQuestion = this.currentQuestion;
-    this.previousAnswer = answer;
-    this.previousAllowedAnswers = this.allowedAnswers;
 
     // Determine if the correct answer was chosen and adjust the stage progress
-    if (this.previousAllowedAnswers.includes(this.previousAnswer))
+    if (this.correctAnswers.includes(chosenAnswer))
       this.stageProgress = this.stageProgress + 1;
     else
       this.stageProgress = this.stageProgress > 0 ? this.stageProgress - 1 : 0;
 
+    // Store this as the previous question/answer
+    this.previousQuestion = this.currentQuestion;
+    this.previousChosenAnswer = chosenAnswer;
+    this.previousCorrectAnswers = this.correctAnswers;
+
     this.setState({
-      previousAnswer: this.previousAnswer,
-      previousQuestion: this.previousQuestion,
+      previousAnswer: this.previousChosenAnswer,
       stageProgress: this.stageProgress
     });
 
+    // Show another question
     if (this.stageProgress >= quizSettings.stageLength[this.props.stage] && !this.props.isLocked)
       setTimeout(() => { this.props.handleStageUp() }, 300);
     else
@@ -191,8 +121,8 @@ export default class Question extends Component {
   };
 
   componentWillMount() {
-    this.previousQuestion = '';
-    this.previousAnswer = '';
+    this.previousQuestion = [];
+    this.previousChosenAnswer = '';
     this.stageProgress = 0;
 
     // TODO: Don't include any syllables outside the chosen groups
@@ -213,8 +143,8 @@ export default class Question extends Component {
     let stageProgressPercentageStyle = { width: stageProgressPercentage };
     return (
       <div className="text-center question col-xs-12">
-        {this.getPreviousResult()}
-        <div className="big-character">{this.getShowableQuestion()}</div>
+        {this.getPreviousResultForDisplay()}
+        <div className="big-character">{this.getQuestionTextForDisplay(this.state.currentQuestion)}</div>
         <div className="answer-container">
           {
             this.props.stage < 3 ?
@@ -222,7 +152,7 @@ export default class Question extends Component {
                 return <AnswerButton answer={answer}
                   className={btnClass}
                   key={idx}
-                  answertype={this.getAnswerType()}
+                  answertype={this.getAnswerTypeForCurrentStage()}
                   handleAnswer={this.handleAnswer} />
               })
             : <div className="answer-form-container">
@@ -248,17 +178,22 @@ export default class Question extends Component {
   }
 }
 
+let AnswerType = {
+  ROMANIZATION: 1,
+  HANGEUL: 2
+};
+
 class AnswerButton extends Component {
-  getShowableAnswer() {
-    if (this.props.answertype === 'romanization')
+  getAnswerTextForDisplay() {
+    if (this.props.answertype === AnswerType.ROMANIZATION)
       return getRomanization(this.props.answer);
     else return String.fromCharCode(parseInt(this.props.answer, 16));
   }
 
   render() {
     return (
-      <button className={this.props.className} onClick={() => this.props.handleAnswer(this.getShowableAnswer())}>
-        {this.getShowableAnswer()}
+      <button className={this.props.className} onClick={() => this.props.handleAnswer(this.getAnswerTextForDisplay())}>
+        {this.getAnswerTextForDisplay()}
       </button>
     );
   }

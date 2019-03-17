@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Switch from 'react-toggle-switch';
-import {groupDefinitions} from '../../data/hangeul';
+import {groupDefinitions} from '../../hangeul';
 import './ChooseCharacters.scss';
 import CharacterGroup from './CharacterGroup';
 
