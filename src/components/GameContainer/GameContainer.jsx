@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import ChooseCharacters from '../ChooseCharacters/ChooseCharacters';
+import ChooseSyllables from '../ChooseCharacters/ChooseSyllables';
 import Game from '../Game/Game';
 
 /**
- * Manages and displays either the game screen (Game) or the settings screen (ChooseCharacters).
+ * Manages and displays either the game screen (Game) or the settings screen (ChooseSyllables).
  */
 export default class GameContainer extends Component {
   state = {
     stage: 1,
     isLocked: false,
-    decidedGroups: JSON.parse(localStorage.getItem('decidedGroups') || null) || []
+    selectedGroupNames: JSON.parse(localStorage.getItem('selectedGroupNames') || null) || []
   };
 
   componentWillReceiveProps() {
@@ -17,14 +17,14 @@ export default class GameContainer extends Component {
       this.setState({stage: 1});
   }
 
-  startGame = decidedGroups => {
+  startGame = selectedGroupNames => {
     if (parseInt(this.state.stage) < 1 || isNaN(parseInt(this.state.stage)))
       this.setState({stage: 1});
     else if (parseInt(this.state.stage) > 4)
       this.setState({stage: 4});
 
-    this.setState({decidedGroups: decidedGroups});
-    localStorage.setItem('decidedGroups', JSON.stringify(decidedGroups));
+    this.setState({selectedGroupNames: selectedGroupNames});
+    localStorage.setItem('selectedGroupNames', JSON.stringify(selectedGroupNames));
     this.props.handleStartGame();
   };
 
@@ -43,15 +43,15 @@ export default class GameContainer extends Component {
     return (
       <div>
         { this.props.gameState === 'chooseCharacters' &&
-            <ChooseCharacters selectedGroups={this.state.decidedGroups}
-              handleStartGame={this.startGame}
-              stage={this.state.stage}
-              isLocked={this.state.isLocked}
-              lockStage={this.lockStage}
+            <ChooseSyllables selectedGroupNames={this.state.selectedGroupNames}
+                             handleStartGame={this.startGame}
+                             stage={this.state.stage}
+                             isLocked={this.state.isLocked}
+                             lockStage={this.lockStage}
             />
           }
           { this.props.gameState === 'game' &&
-              <Game decidedGroups={this.state.decidedGroups}
+              <Game selectedGroupNames={this.state.selectedGroupNames}
                 handleEndGame={this.props.handleEndGame}
                 stageUp={this.stageUp}
                 stage={this.state.stage}

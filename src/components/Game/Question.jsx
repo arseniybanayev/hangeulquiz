@@ -40,9 +40,9 @@ export default class Question extends Component {
       this.correctAnswers = this.currentQuestion;
   }
 
-  getAnswerTypeForCurrentStage() {
-    if (this.props.stage === 2) return AnswerType.HANGEUL;
-    else return AnswerType.ROMANIZATION;
+  getWritingTypeOfAnswerForCurrentStage() {
+    if (this.props.stage === 2) return WritingType.HANGEUL;
+    else return WritingType.ROMANIZATION;
   }
 
   getPreviousResultForDisplay() {
@@ -75,7 +75,7 @@ export default class Question extends Component {
   }
 
   getQuestionTextForDisplay(question) {
-    if (this.getAnswerTypeForCurrentStage() === AnswerType.HANGEUL)
+    if (this.getWritingTypeOfAnswerForCurrentStage() === WritingType.HANGEUL)
       return question.map(s => getRomanization((s))).join(' ');
     else return question.map(s => String.fromCharCode(parseInt(s, 16))).join();
   }
@@ -127,7 +127,7 @@ export default class Question extends Component {
 
     // TODO: Don't include any syllables outside the chosen groups
     // (See getRandomSyllables and the TODO there)
-    //if(arrayContains(groupName, this.props.decidedGroups)) {
+    //if(arrayContains(groupName, this.props.selectedGroupNames)) {
     //}
   }
 
@@ -152,7 +152,7 @@ export default class Question extends Component {
                 return <AnswerButton answer={answer}
                   className={btnClass}
                   key={idx}
-                  answertype={this.getAnswerTypeForCurrentStage()}
+                  writingType={this.getWritingTypeOfAnswerForCurrentStage()}
                   handleAnswer={this.handleAnswer} />
               })
             : <div className="answer-form-container">
@@ -178,14 +178,14 @@ export default class Question extends Component {
   }
 }
 
-let AnswerType = {
+export let WritingType = {
   ROMANIZATION: 1,
   HANGEUL: 2
 };
 
 class AnswerButton extends Component {
   getAnswerTextForDisplay() {
-    if (this.props.answertype === AnswerType.ROMANIZATION)
+    if (this.props.writingType === WritingType.ROMANIZATION)
       return getRomanization(this.props.answer);
     else return String.fromCharCode(parseInt(this.props.answer, 16));
   }
