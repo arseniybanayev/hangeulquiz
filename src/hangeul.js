@@ -2509,9 +2509,14 @@ export let RuleType = {
   ALLOW_FINAL_CONSONANTS: 4
 };
 
+export const ruleGroupColumnDefinitions = [
+  ['Consonants', 'Final Consonants'],
+  ['Vowels', 'Specific Syllables']
+];
+
 export const availableRules = {
   // TODO: Consider adding rules to control syllable font.
-  //    // 'font-family: \'Gaegu\', cursive;',
+  //       ex: 'font-family: \'Gaegu\', cursive;',
 
   'Consonants': {
     'Velar Consonants': {
@@ -2539,7 +2544,7 @@ export const availableRules = {
       allowedLetters: ['ᄋ', 'ᄒ'],
       similarAllowedLetters: ['ᆼ', 'ᇂ']
     },
-    'Tense and Doubled Consonants': {
+    'Tense/Doubled Consonants': {
       type: RuleType.ALLOWED_CONSONANTS,
       allowedLetters: ['ᄁ', 'ᄄ', 'ᄈ', 'ᄊ', 'ᄍ'],
       similarAllowedLetters: ['ᆩ', 'ᆪ', 'ᆬ', 'ᆭ', 'ᆰ', 'ᆱ', 'ᆲ', 'ᆳ', 'ᆴ', 'ᆵ', 'ᆶ', 'ᆹ', 'ᆻ']
@@ -2580,7 +2585,7 @@ export const availableRules = {
   },
 
   'Specific Syllables': {
-    'Korean Standard (common syllables)': {
+    'Common Syllables': {
       type: RuleType.ALLOWED_SYLLABLES,
       allowedSyllables: koreanStandard
     }

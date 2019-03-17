@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Switch from 'react-toggle-switch';
-import { availableRules } from '../../hangeul';
+import {availableRules, ruleGroupColumnDefinitions} from '../../hangeul';
 import './SetupGame.scss';
 import GameRule from './GameRule';
 import {getAllowedSyllables, lookupRulesByName} from "../../util";
@@ -153,11 +153,13 @@ export default class SetupGame extends Component {
   /**
    * Returns visible rows for every rule group and rule.
    */
-  getRows() {
+  getRows(columnIdx) {
     let rows = [];
     let idx = 0;
 
     Object.keys(availableRules).forEach((ruleGroupName) => {
+      if (!ruleGroupColumnDefinitions[columnIdx].includes(ruleGroupName))
+        return;
       let rules = availableRules[ruleGroupName];
       let ruleNames = Object.keys(rules);
 
@@ -216,8 +218,17 @@ export default class SetupGame extends Component {
             </div>
             <div className="panel panel-default">
               <div className="panel-heading">Hangeul · 한글</div>
-              <div className="panel-body selection-areas">
-                {this.getRows(0, 1)}
+              <div className="row">
+                <div className="col-sm-6">
+                  <div className="panel-body selection-areas">
+                    {this.getRows(0)}
+                  </div>
+                </div>
+                <div className="col-sm-6">
+                  <div className="panel-body selection-areas">
+                    {this.getRows(1)}
+                  </div>
+                </div>
               </div>
             </div>
             <div className="panel-footer text-center">
