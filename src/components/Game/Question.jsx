@@ -22,20 +22,10 @@ export default class Question extends Component {
    * Selects a syllable and some answer options, and set up the state to show them as the current question.
    */
   setNewQuestion() {
-    // Pick a new question and syllables
-    let selectedRules = [];
-    Object.keys(availableRules).forEach(ruleGroupName => {
-      let ruleGroup = availableRules[ruleGroupName];
-      Object.keys(ruleGroup).forEach(ruleName => {
-        if (this.props.selectedRuleNames.includes(ruleName))
-          selectedRules.push(ruleGroup[ruleName]);
-      })
-    });
-
-    this.currentQuestion = getRandomSyllables(1, selectedRules, false, this.previousQuestion);
+    this.currentQuestion = getRandomSyllables(1, this.props.allowedSyllables, false, this.previousQuestion);
 
     // Pick some syllables as options for answers
-    this.answerOptions = getRandomSyllables(3, selectedRules, this.currentQuestion, false);
+    this.answerOptions = getRandomSyllables(3, this.props.allowedSyllables, this.currentQuestion, false);
 
     this.setState({
       currentQuestion: this.currentQuestion,
