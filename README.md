@@ -1,7 +1,7 @@
 # Hangeul.soy
 Hangeul quiz made with React.js, Webpack and Express.
 
-See live at https://hangeul.soy/
+See live at http://www.hangeul.soy/
 
 Install dependencies
 1. `npm install`
