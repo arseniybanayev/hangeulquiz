@@ -6,6 +6,4 @@ import { render } from 'react-dom';
 import Bootstrap from './assets/stylesheets/bootstrap.min.css';
 
 let elem = document.getElementById('app');
-console.log(elem);
-
 render(<App />, elem);

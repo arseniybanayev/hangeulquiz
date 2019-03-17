@@ -3,6 +3,7 @@ import Switch from 'react-toggle-switch';
 import { availableRules } from '../../hangeul';
 import './SetupGame.scss';
 import GameRule from './GameRule';
+import {getAllowedSyllables, lookupRulesByName} from "../../util";
 
 /**
  * View and controller of rules that can be selected for the game.
@@ -61,9 +62,9 @@ export default class SetupGame extends Component {
   deselectRule(ruleName) {
     if (this.getIndex(ruleName) < 0)
       return;
-    let newselectedRuleNames = this.state.selectedRuleNames.slice();
-    newselectedRuleNames.splice(this.getIndex(ruleName), 1);
-    this.setState({selectedRuleNames: newselectedRuleNames});
+    let newSelectedRuleNames = this.state.selectedRuleNames.slice();
+    newSelectedRuleNames.splice(this.getIndex(ruleName), 1);
+    this.setState({selectedRuleNames: newSelectedRuleNames});
   }
 
   selectRule(ruleName) {
@@ -85,21 +86,21 @@ export default class SetupGame extends Component {
    * selects all rules belonging to the specified rule group.
    */
   selectAll(ruleGroupName) {
-    let newselectedRuleNames;
+    let newSelectedRuleNames;
     if (ruleGroupName) {
       // Add rules in the group
-      newselectedRuleNames = this.state.selectedRuleNames
+      newSelectedRuleNames = this.state.selectedRuleNames
         .concat(Object.keys(availableRules[ruleGroupName]))
         // This .filter(..) is just a .distinct()
         .filter((v, i, a) => a.indexOf(v) === i);
     } else {
       // Select all rules
-      newselectedRuleNames = Object.keys(availableRules)
+      newSelectedRuleNames = Object.keys(availableRules)
         .map(ruleName => Object.keys(availableRules[ruleName]))
         .reduce((a, b) => a.concat(b), []);
     }
 
-    this.setState({errMsg: '', selectedRuleNames: newselectedRuleNames});
+    this.setState({errMsg: '', selectedRuleNames: newSelectedRuleNames});
   }
 
   /**
@@ -107,7 +108,7 @@ export default class SetupGame extends Component {
    * deselects all rules belonging to the specified rule group.
    */
   selectNone(ruleGroupName) {
-    let newselectedRuleNames = this.state.selectedRuleNames.filter(
+    let newSelectedRuleNames = this.state.selectedRuleNames.filter(
       function(ruleName) {
         // If a rule group is specified, then keep this rule if
         // it doesn't belong to the specified rule group
@@ -117,7 +118,7 @@ export default class SetupGame extends Component {
         return false;
       });
 
-    this.setState({selectedRuleNames: newselectedRuleNames});
+    this.setState({selectedRuleNames: newSelectedRuleNames});
   }
 
   getRuleGroupRow(ruleGroupName, ruleNames) {
@@ -183,9 +184,10 @@ export default class SetupGame extends Component {
   }
 
   startGame() {
-    // TODO: Add more validation
-    if (this.state.selectedRuleNames.length < 1) {
-      this.setState({ errMsg: 'Choose at least one rule!'});
+    // Determine the allowed syllable set before the game starts
+    let allowedSyllables = getAllowedSyllables(lookupRulesByName(this.state.selectedRuleNames));
+    if (allowedSyllables.length < 10) {
+      this.setState({errMsg: 'Not enough syllables included!'});
       return;
     }
 

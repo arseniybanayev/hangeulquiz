@@ -49,7 +49,7 @@ export function getAllowedSyllables(rules) {
   let allowedSyllables = [...Array(parseInt(hangeul.last, 16) - parseInt(hangeul.first, 16) + 1).keys()]
     .map(e => e + parseInt(hangeul.first, 16));
 
-  // Narrow down to ALLOWED_SYLLABLES rules
+  // Narrow down to ALLOWED_SYLLABLES rules, if any
   allowedSyllables = intersection(
     rules
       .filter(r => r.type === RuleType.ALLOWED_SYLLABLES)
@@ -57,26 +57,28 @@ export function getAllowedSyllables(rules) {
       .concat([allowedSyllables])
   );
 
-  // Narrow down to ALLOWED_VOWELS and ALLOWED_CONSONANTS rules
+  // Narrow down to ALLOWED_VOWELS and ALLOWED_CONSONANTS rules, if any
   let allowedLetters = rules
     .filter(r => r.type === RuleType.ALLOWED_CONSONANTS || r.type === RuleType.ALLOWED_VOWELS)
-    .map(r => r.allowedLetters)
-    .reduce((a, b) => a.concat(b).filter((v, i, a) => a.indexOf(v) === i)); // .union()
+    .map(r => r.allowedLetters.concat(r.similarAllowedLetters ? r.similarAllowedLetters : []))
+    .reduce((a, b) => a.concat(b).filter((v, i, a) => a.indexOf(v) === i), []); // .union()
 
   // Filter out final consonants to respect the ALLOW_FINAL_CONSONANTS rule
-  let finalConsonantsOn = rules.filter(r => r.type === RuleType.ALLOW_FINAL_CONSONANTS).length > 0;
+  let finalConsonantsOn = rules.some(r => r.type === RuleType.ALLOW_FINAL_CONSONANTS);
 
   // TODO: Do this using math instead of iteration
   allowedSyllables = allowedSyllables
     .filter(s => {
       let letters = getIndividualLettersFromHex(s.toString(16));
+
       // Check if the letters are allowed (or, for the case of the final consonant in particular, empty, meaning no letter)
-      if (allowedLetters.length > 0 && !letters.every(l => allowedLetters.includes(l) || l === '')) {
+      if (allowedLetters.length > 0 && !letters.every(l => allowedLetters.includes(l) || l === ''))
         return false;
-      }
-      if (!finalConsonantsOn && letters[2] !== '') {
+
+      // Check if final consonants are allowed
+      if (!finalConsonantsOn && letters[2] !== '')
         return false;
-      }
+
       return true;
     });
 
@@ -199,5 +201,5 @@ function intersection(arrays) {
   if (arrays.length === 1)
     return arrays[0];
   let skipOne = arrays.splice(1);
-  return arrays[0].filter(arr => arr.every(x => skipOne.includes(x)));
+  return arrays[0].filter(x => skipOne.every(arr => arr.includes(x)));
 }

@@ -2515,34 +2515,34 @@ export const availableRules = {
 
   'Consonants': {
     'Velar Consonants': {
-      // 아음
       type: RuleType.ALLOWED_CONSONANTS,
-      allowedLetters: ['ᄀ', 'ᄏ']
+      allowedLetters: ['ᄀ', 'ᄏ'],
+      similarAllowedLetters: ['ᆨ', 'ᆿ']
     },
     'Sibilant Consonants': {
-      // 치음
       type: RuleType.ALLOWED_CONSONANTS,
-      allowedLetters: ['ᄉ', 'ᄌ', 'ᄎ']
+      allowedLetters: ['ᄉ', 'ᄌ', 'ᄎ'],
+      similarAllowedLetters: ['ᆺ', 'ᆽ', 'ᆾ']
     },
     'Coronal Consonants': {
-      // 설음
       type: RuleType.ALLOWED_CONSONANTS,
-      allowedLetters: ['ᄂ', 'ᄃ', 'ᄐ', 'ᄅ']
+      allowedLetters: ['ᄂ', 'ᄃ', 'ᄐ', 'ᄅ'],
+      similarAllowedLetters: ['ᆫ', 'ᆮ', 'ᇀ', 'ᆯ']
     },
     'Bilabial Consonants': {
-      // 순음
       type: RuleType.ALLOWED_CONSONANTS,
-      allowedLetters: ['ᄆ', 'ᄇ', 'ᄑ']
+      allowedLetters: ['ᄆ', 'ᄇ', 'ᄑ'],
+      similarAllowedLetters: ['ᆷ', 'ᆸ', 'ᇁ']
     },
     'Dorsal Consonants': {
-      // 후음
       type: RuleType.ALLOWED_CONSONANTS,
-      allowedLetters: ['ᄋ', 'ᄒ']
+      allowedLetters: ['ᄋ', 'ᄒ'],
+      similarAllowedLetters: ['ᆼ', 'ᇂ']
     },
-    'Tense Consonants': {
-      // 쌍자음
+    'Tense and Doubled Consonants': {
       type: RuleType.ALLOWED_CONSONANTS,
-      allowedLetters: ['ᄁ', 'ᄄ', 'ᄈ', 'ᄊ', 'ᄍ']
+      allowedLetters: ['ᄁ', 'ᄄ', 'ᄈ', 'ᄊ', 'ᄍ'],
+      similarAllowedLetters: ['ᆩ', 'ᆪ', 'ᆬ', 'ᆭ', 'ᆰ', 'ᆱ', 'ᆲ', 'ᆳ', 'ᆴ', 'ᆵ', 'ᆶ', 'ᆹ', 'ᆻ']
     }
   },
 
@@ -2574,7 +2574,6 @@ export const availableRules = {
   },
 
   'Final Consonants': {
-    // 받침
     'Final Consonants': {
       type: RuleType.ALLOW_FINAL_CONSONANTS
     }

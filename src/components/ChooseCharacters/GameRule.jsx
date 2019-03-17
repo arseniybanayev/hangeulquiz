@@ -23,12 +23,12 @@ export default class GameRule extends Component {
       let allowedSyllables = this.props.allowedSyllables;
       shuffle(allowedSyllables);
       return allowedSyllables
-        .splice(0, 7)
+        .splice(0, 9)
         .map(hex => String.fromCharCode(parseInt(hex, 16)))
         .concat(['...'])
         .join(' · ');
     } else {
-      return '';
+      return 'Allow';
     }
   }
 
