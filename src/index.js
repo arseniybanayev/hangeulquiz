@@ -1,10 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import Bootstrap from './assets/stylesheets/bootstrap.min.css';
 import App from './components/App/App';
+import { render } from 'react-dom';
+import Bootstrap from './assets/stylesheets/bootstrap.min.css';
 
-let appEl = document.getElementById('app');
-if(!appEl) // in case of old index.html in cache
-  appEl = document.querySelector('.app');
+let elem = document.getElementById('app');
+console.log(elem);
 
-ReactDOM.render(<App />, appEl);
+render(<App />, elem);

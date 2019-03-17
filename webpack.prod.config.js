@@ -1,23 +1,37 @@
-const HtmlWebPackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
-  resolve: {
-    extensions: ['.js', '.jsx']
-  },
-  plugins: [
-    new HtmlWebPackPlugin({
-      template: './src/index.html',
-      filename: './index.html'
-    })
+  devtool: 'source-map',
+
+  entry: [
+    './src/index'
   ],
+
+  output: {
+    path: path.join(__dirname, 'public'),
+    filename: 'bundle.js',
+    publicPath: '/public/'
+  },
+
+  resolve: {
+    extensions: ['.js', '.jsx'],
+  },
+
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
+  ],
+
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader'
-        }
+        use: 'babel-loader',
+        include: path.join(__dirname, 'src')
       },
       {
         test: /\.scss$/,
@@ -42,8 +56,8 @@ module.exports = {
       },
       {
         test: /\.(png|jpg|svg|woff|woff2)?(\?v=\d+.\d+.\d+)?$/,
-        loader: 'url-loader?limit=25000'
-      }, 
+        loader: 'file-loader'
+      },
       {
         test: /\.(eot|ttf)$/,
         loader: 'file-loader'
