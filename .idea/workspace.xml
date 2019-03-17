@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="99947cac-f1ff-43a6-9d02-3e56470b98dd" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/components/ChooseCharacters/GameRule.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ChooseCharacters/GameRule.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ChooseCharacters/SetupGame.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ChooseCharacters/SetupGame.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/hangeul.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/hangeul.js" afterDir="false" />
-    </list>
+    <list default="true" id="99947cac-f1ff-43a6-9d02-3e56470b98dd" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/dist/" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -21,8 +17,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/hangeul.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="104">
-              <caret line="2546" column="11" selection-start-line="2546" selection-start-column="11" selection-end-line="2546" selection-end-column="11" />
+            <state relative-caret-position="330">
+              <caret line="15" column="9" lean-forward="true" selection-start-line="15" selection-start-column="9" selection-end-line="15" selection-end-column="9" />
               <folding>
                 <element signature="e#1509#1658#0" />
                 <element signature="e#1922#25424#0" />
@@ -320,12 +316,12 @@
       <updated>1552679812327</updated>
       <workItem from="1552679817452" duration="19893000" />
       <workItem from="1552753477664" duration="235000" />
-      <workItem from="1552753760504" duration="43494000" />
+      <workItem from="1552753760504" duration="43534000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="63622000" />
+    <option name="totallyTimeSpent" value="63662000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1519" height="977" extended-state="6" />
@@ -658,8 +654,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/hangeul.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="2546" column="11" selection-start-line="2546" selection-start-column="11" selection-end-line="2546" selection-end-column="11" />
+        <state relative-caret-position="330">
+          <caret line="15" column="9" lean-forward="true" selection-start-line="15" selection-start-column="9" selection-end-line="15" selection-end-column="9" />
           <folding>
             <element signature="e#1509#1658#0" />
             <element signature="e#1922#25424#0" />
