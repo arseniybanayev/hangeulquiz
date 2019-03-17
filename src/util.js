@@ -1,35 +1,42 @@
 import * as hangeul from "./hangeul";
+import {RuleType} from "./hangeul";
+
+/**
+ * Parses the specified hexadecimal code into a syllable and returns an array
+ * of the initial consonant, vowel and (if any) final consonant.
+ * @param syllableHex
+ * @returns {string[]}
+ */
+export function getIndividualLettersFromHex(syllableHex) {
+  let difference = parseInt(syllableHex, 16) - parseInt(hangeul.first, 16);
+
+  let idxInitialConsonant = Math.floor(difference / (hangeul.finalConsonants.length * hangeul.vowels.length));
+  let initialConsonant = hangeul.initialConsonants[idxInitialConsonant];
+  difference -= idxInitialConsonant * hangeul.finalConsonants.length * hangeul.vowels.length;
+
+  let idxVowel = Math.floor(difference / (hangeul.finalConsonants.length));
+  let vowel = hangeul.vowels[idxVowel];
+  difference -= idxVowel * hangeul.finalConsonants.length;
+
+  let idxFinalConsonant = difference;
+  let finalConsonant = hangeul.finalConsonants[idxFinalConsonant];
+
+  return [initialConsonant, vowel, finalConsonant];
+}
 
 /**
  * Returns the romanization of the supplied syllable, identified (as usual) by its hexadecimal
  * Unicode value.
  *
- * @param syllable
+ * @param syllableHex
  *    The syllable to be romanized, identified (as usual) by its hexadecimal Unicode value.
  */
-export function getRomanization(syllable) {
-  console.log('Syllable: ' + syllable);
-  let difference = parseInt(syllable, 16) - parseInt(hangeul.first, 16);
-  console.log('Difference: ' + difference);
+export function getRomanization(syllableHex) {
+  let letters = getIndividualLettersFromHex(syllableHex);
 
-  let idxInitialConsonant = Math.floor(difference / (hangeul.finalConsonants.length * hangeul.vowels.length));
-  console.log('Index of initial consonant: ' + idxInitialConsonant);
-  let initialConsonant = hangeul.initialConsonants[idxInitialConsonant];
-  difference -= idxInitialConsonant * hangeul.finalConsonants.length * hangeul.vowels.length;
-  console.log('Initial consonant: ' + initialConsonant);
-
-  let idxVowel = Math.floor(difference / (hangeul.finalConsonants.length));
-  console.log('Index of vowel: ' + idxVowel);
-  let vowel = hangeul.vowels[idxVowel];
-  difference -= idxVowel * hangeul.finalConsonants.length;
-  console.log('Vowel: ' + vowel);
-
-  let idxFinalConsonant = difference;
-  console.log('Index of final consonant: ' + idxFinalConsonant);
-  let finalConsonant = hangeul.finalConsonants[idxFinalConsonant];
-  console.log('Final consonant: ' + finalConsonant);
-
-  return hangeul.romanizations[initialConsonant][0] + hangeul.romanizations[vowel][0] + hangeul.romanizations[finalConsonant][0];
+  return hangeul.romanizations[letters[0]][0]
+    + hangeul.romanizations[letters[1]][0]
+    + hangeul.romanizations[letters[2]][0];
 }
 
 /**
@@ -37,75 +44,117 @@ export function getRomanization(syllable) {
  * hexadecimal Unicode value.
  *
  * @param amount
- *    Number of random syllables to return in total, after taking into account `include` and `exclude`.
+ *    Number of random syllables to return in total, after taking into account `includeSyllableHexes` and `excludeSyllableHexes`.
  *
- * @param include
+ * @param rules
+ *
+ * @param includeSyllableHexes
  *    An optional array that includes syllables that should be included in the returned array,
  *    identified (as usual) by their hexadecimal Unicode values.
  *
- * @param exclude
+ * @param excludeSyllableHexes
  *    An optional array that includes syllables that should be excluded from the returned array,
  *    identified (as usual) by their hexadecimal Unicode values.
  */
-export function getRandomSyllables(amount, include, exclude) {
-  console.log('amount: ' + amount);
-  console.log('include: ' + include);
-  console.log('exclude: ' + exclude);
-  let randomSyllables = [];
+export function getRandomSyllables(amount, rules, includeSyllableHexes, excludeSyllableHexes) {
+  let randomSyllableHexes = [];
   let romanizations = []; // Temp array, used for checking romanization clashes
   let desiredRandomSyllableAmount = amount;
-  if (include)
-    desiredRandomSyllableAmount -= include.length;
+  if (includeSyllableHexes)
+    desiredRandomSyllableAmount -= includeSyllableHexes.length;
 
-  while (randomSyllables.length < desiredRandomSyllableAmount) {
-    // Pick a random syllable from `first` to `last`
-    let randomSyllable = getRandomInt(parseInt(hangeul.first, 16), parseInt(hangeul.last, 16)).toString(16);
+  // Summarize the rules
+  let allowedSyllables = intersection(
+    rules
+      .filter(r => r.type === RuleType.ALLOWED_SYLLABLES)
+      .map(r => r.allowedSyllables));
 
-    // TODO: Don't include any syllables outside the chosen groups
+  let allowedLetters = rules
+    .filter(r => r.type === RuleType.ALLOWED_CONSONANTS || r.type === RuleType.ALLOWED_VOWELS)
+    .map(r => r.allowedLetters)
+    .reduce((a, b) => a.concat(b), []);
+  let finalConsonantsOn = rules
+    .filter(r => r.type === RuleType.ALLOW_FINAL_CONSONANTS)
+    .length > 0;
 
-    // Don't include the specified syllables in `exclude`
-    if (exclude && exclude.includes(randomSyllable))
+  let attempt = 0;
+  while (randomSyllableHexes.length < desiredRandomSyllableAmount) {
+    attempt++;
+    if (attempt === 5000)
+      return ['ac00'];
+
+    let randomSyllableHex;
+
+    // If the rules specify allowedSyllables, pick from those
+    if (allowedSyllables.length > 0) {
+      randomSyllableHex = allowedSyllables[getRandomInt(0, allowedSyllables.length - 1)];
+    } else {
+      // Pick a random syllable from `first` to `last`
+      randomSyllableHex = getRandomInt(parseInt(hangeul.first, 16), parseInt(hangeul.last, 16)).toString(16);
+    }
+
+    // Don't include the specified syllables in `excludeSyllableHexes`
+    if (excludeSyllableHexes && excludeSyllableHexes.includes(randomSyllableHex)) {
+      console.log('not choosing ' + randomSyllableHex + ', it\'s excluded');
       continue;
+    }
 
     // Don't include any already-chosen syllables
-    if (randomSyllables.includes(randomSyllable))
+    if (randomSyllableHexes.includes(randomSyllableHex)) {
+      console.log('not choosing ' + randomSyllableHex + ', it was already chosen');
       continue;
+    }
 
-    // Don't include any syllables that clash in romanization with already chosen syllables
-    let romanization = getRomanization(randomSyllable);
-    if (romanizations.includes(romanization))
+    // Don't include any syllables that clash in romanization with already-chosen syllables
+    let romanization = getRomanization(randomSyllableHex);
+    if (romanizations.includes(romanization)) {
+      console.log('not choosing ' + randomSyllableHex + ', its romanization was already chosen');
       continue;
+    }
+
+    // Don't include any syllables that violate the allowedLetters
+    let letters = getIndividualLettersFromHex(randomSyllableHex);
+    if (allowedLetters.length > 0 && letters.some(l => !allowedLetters.includes(l))) {
+      console.log('not choosing ' + randomSyllableHex + ', it is not allowed');
+      continue;
+    }
+
+    // Don't include any syllables that have final consonants, if they're not allowed
+    if (!finalConsonantsOn && letters[2] !== '') {
+      console.log('not choosing ' + randomSyllableHex + ', it has a final consonant');
+      continue;
+    }
 
     // Good to go!
-    randomSyllables.push(randomSyllable);
+    console.log('chose ' + randomSyllableHex);
+    randomSyllableHexes.push(randomSyllableHex);
     romanizations.push(romanization);
   }
 
-  // Add the `include` syllables
-  if (include) {
-    for (var i = 0; i < include.length; i++)
-      randomSyllables.push(include[i]);
+  // Add the `includeSyllableHexes` syllables
+  if (includeSyllableHexes) {
+    for (let i = 0; i < includeSyllableHexes.length; i++)
+      randomSyllableHexes.push(includeSyllableHexes[i]);
   }
 
-  shuffle(randomSyllables);
-  console.log(randomSyllables);
-  return randomSyllables;
+  shuffle(randomSyllableHexes);
+  return randomSyllableHexes;
 }
 
 /**
  * Performs the Fisher-Yates shuffle in place on the specified array.
  */
-function shuffle(array) {
+export function shuffle(array) {
   let currentIndex = array.length, temporaryValue, randomIndex;
 
-  // While there remain elements to shuffle...
+  // While there remain elements to shuffle
   while (0 !== currentIndex) {
 
-    // Pick a remaining element...
+    // Pick a remaining element
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex -= 1;
 
-    // And swap it with the current element.
+    // And swap it with the current element
     temporaryValue = array[currentIndex];
     array[currentIndex] = array[randomIndex];
     array[randomIndex] = temporaryValue;
@@ -123,4 +172,13 @@ function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function intersection(arrays) {
+  if (arrays.length === 0)
+    return [];
+  if (arrays.length === 1)
+    return arrays[0];
+  let skipOne = arrays.splice(1);
+  return arrays[0].filter(arr => arr.every(x => skipOne.includes(x)));
 }

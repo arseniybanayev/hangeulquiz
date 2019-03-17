@@ -2502,88 +2502,88 @@ export const koreanStandard = [
   'd79d'
 ];
 
-export let GroupDefinitionType = {
-  SYLLABLE_LIST: 1,
-  INITIAL_CONSONANT: 2,
-  VOWEL: 3,
-  FINAL_CONSONANT: 4
+export let RuleType = {
+  ALLOWED_SYLLABLES: 1,
+  ALLOWED_CONSONANTS: 2,
+  ALLOWED_VOWELS: 3,
+  ALLOW_FINAL_CONSONANTS: 4
 };
 
-export const groupDefinitionsByHeader = {
-  // TODO: Consider adding groups that look different,
+export const availableRules = {
+  // TODO: Consider adding rules to control syllable font.
   //    // 'font-family: \'Gaegu\', cursive;',
 
   'Consonants': {
     'Velar Consonants': {
       // 아음
-      type: GroupDefinitionType.INITIAL_CONSONANT,
-      characterSet: ['ᄀ', 'ᄏ']
+      type: RuleType.ALLOWED_CONSONANTS,
+      allowedLetters: ['ᄀ', 'ᄏ']
     },
     'Sibilant Consonants': {
       // 치음
-      type: GroupDefinitionType.INITIAL_CONSONANT,
-      characterSet: ['ᄉ', 'ᄌ', 'ᄎ']
+      type: RuleType.ALLOWED_CONSONANTS,
+      allowedLetters: ['ᄉ', 'ᄌ', 'ᄎ']
     },
     'Coronal Consonants': {
       // 설음
-      type: GroupDefinitionType.INITIAL_CONSONANT,
-      characterSet: ['ᄂ', 'ᄃ', 'ᄐ', 'ᄅ']
+      type: RuleType.ALLOWED_CONSONANTS,
+      allowedLetters: ['ᄂ', 'ᄃ', 'ᄐ', 'ᄅ']
     },
     'Bilabial Consonants': {
       // 순음
-      type: GroupDefinitionType.INITIAL_CONSONANT,
-      characterSet: ['ᄆ', 'ᄇ', 'ᄑ']
+      type: RuleType.ALLOWED_CONSONANTS,
+      allowedLetters: ['ᄆ', 'ᄇ', 'ᄑ']
     },
     'Dorsal Consonants': {
       // 후음
-      type: GroupDefinitionType.INITIAL_CONSONANT,
-      characterSet: ['ᄋ', 'ᄒ']
+      type: RuleType.ALLOWED_CONSONANTS,
+      allowedLetters: ['ᄋ', 'ᄒ']
     },
     'Tense Consonants': {
       // 쌍자음
-      type: GroupDefinitionType.INITIAL_CONSONANT,
-      characterSet: ['ᄁ', 'ᄄ', 'ᄈ', 'ᄊ', 'ᄍ']
+      type: RuleType.ALLOWED_CONSONANTS,
+      allowedLetters: ['ᄁ', 'ᄄ', 'ᄈ', 'ᄊ', 'ᄍ']
     }
   },
 
   'Vowels': {
     'Basic Vowels': {
-      type: GroupDefinitionType.VOWEL,
-      characterSet: ['ᅡ', 'ᅥ', 'ᅩ', 'ᅮ', 'ᅳ', 'ᅵ']
+      type: RuleType.ALLOWED_VOWELS,
+      allowedLetters: ['ᅡ', 'ᅥ', 'ᅩ', 'ᅮ', 'ᅳ', 'ᅵ']
     },
     'Basic Vowels +i': {
-      type: GroupDefinitionType.VOWEL,
-      characterSet: ['ᅢ', 'ᅦ', 'ᅱ', 'ᅬ', 'ᅴ']
+      type: RuleType.ALLOWED_VOWELS,
+      allowedLetters: ['ᅢ', 'ᅦ', 'ᅱ', 'ᅬ', 'ᅴ']
     },
     'Basic Vowels +y': {
-      type: GroupDefinitionType.VOWEL,
-      characterSet: ['ᅣ', 'ᅧ', 'ᅭ', 'ᅲ']
+      type: RuleType.ALLOWED_VOWELS,
+      allowedLetters: ['ᅣ', 'ᅧ', 'ᅭ', 'ᅲ']
     },
     'Basic Vowels +i +y': {
-      type: GroupDefinitionType.VOWEL,
-      characterSet: ['ᅤ', 'ᅨ']
+      type: RuleType.ALLOWED_VOWELS,
+      allowedLetters: ['ᅤ', 'ᅨ']
     },
     'Basic Vowels +w': {
-      type: GroupDefinitionType.VOWEL,
-      characterSet: ['ᅪ', 'ᅯ']
+      type: RuleType.ALLOWED_VOWELS,
+      allowedLetters: ['ᅪ', 'ᅯ']
     },
     'Basic Vowels +w +i': {
-      type: GroupDefinitionType.VOWEL,
-      characterSet: ['ᅫ', 'ᅰ']
+      type: RuleType.ALLOWED_VOWELS,
+      allowedLetters: ['ᅫ', 'ᅰ']
     }
   },
 
   'Final Consonants': {
     // 받침
     'Final Consonants': {
-      type: GroupDefinitionType.FINAL_CONSONANT
+      type: RuleType.ALLOW_FINAL_CONSONANTS
     }
   },
 
   'Specific Syllables': {
     'Korean Standard (common syllables)': {
-      type: GroupDefinitionType.SYLLABLE_LIST,
-      set: koreanStandard
+      type: RuleType.ALLOWED_SYLLABLES,
+      allowedSyllables: koreanStandard
     }
   }
 };

@@ -5,6 +5,7 @@ import {
   getRomanization
 } from '../../util';
 import './Question.scss';
+import {availableRules} from "../../hangeul";
 
 /**
  * Self-explanatory. Also displays itself.
@@ -22,10 +23,19 @@ export default class Question extends Component {
    */
   setNewQuestion() {
     // Pick a new question and syllables
-    this.currentQuestion = getRandomSyllables(1, false, this.previousQuestion);
+    let selectedRules = [];
+    Object.keys(availableRules).forEach(ruleGroupName => {
+      let ruleGroup = availableRules[ruleGroupName];
+      Object.keys(ruleGroup).forEach(ruleName => {
+        if (this.props.selectedRuleNames.includes(ruleName))
+          selectedRules.push(ruleGroup[ruleName]);
+      })
+    });
+
+    this.currentQuestion = getRandomSyllables(1, selectedRules, false, this.previousQuestion);
 
     // Pick some syllables as options for answers
-    this.answerOptions = getRandomSyllables(3, this.currentQuestion, false);
+    this.answerOptions = getRandomSyllables(3, selectedRules, this.currentQuestion, false);
 
     this.setState({
       currentQuestion: this.currentQuestion,
@@ -124,11 +134,6 @@ export default class Question extends Component {
     this.previousQuestion = [];
     this.previousChosenAnswer = '';
     this.stageProgress = 0;
-
-    // TODO: Don't include any syllables outside the chosen groups
-    // (See getRandomSyllables and the TODO there)
-    //if(arrayContains(groupName, this.props.selectedGroupNames)) {
-    //}
   }
 
   componentDidMount() {

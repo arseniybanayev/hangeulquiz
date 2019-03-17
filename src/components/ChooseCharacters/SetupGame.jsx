@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import Switch from 'react-toggle-switch';
-import { groupDefinitionsByHeader } from '../../hangeul';
-import './ChooseSyllables.scss';
-import SyllableGroup from './SyllableGroup';
+import { availableRules } from '../../hangeul';
+import './SetupGame.scss';
+import GameRule from './GameRule';
 
 /**
- * View and controller of character groups that can be selected for the game.
+ * View and controller of rules that can be selected for the game.
  */
-export default class ChooseSyllables extends Component {
+export default class SetupGame extends Component {
   state = {
     errMsg : '',
-    selectedGroupNames: this.props.selectedGroupNames,
+    selectedRuleNames: this.props.selectedRuleNames,
     startIsVisible: true
   };
 
@@ -50,94 +50,94 @@ export default class ChooseSyllables extends Component {
     }
   }
 
-  getIndex(groupName) {
-    return this.state.selectedGroupNames.indexOf(groupName);
+  getIndex(ruleName) {
+    return this.state.selectedRuleNames.indexOf(ruleName);
   }
 
-  isSelected(groupName) {
-    return this.getIndex(groupName) > -1;
+  isSelected(ruleName) {
+    return this.getIndex(ruleName) > -1;
   }
 
-  removeGroupNameFromSelected(groupName) {
-    if (this.getIndex(groupName) < 0)
+  deselectRule(ruleName) {
+    if (this.getIndex(ruleName) < 0)
       return;
-    let newSelectedGroupNames = this.state.selectedGroupNames.slice();
-    newSelectedGroupNames.splice(this.getIndex(groupName), 1);
-    this.setState({selectedGroupNames: newSelectedGroupNames});
+    let newselectedRuleNames = this.state.selectedRuleNames.slice();
+    newselectedRuleNames.splice(this.getIndex(ruleName), 1);
+    this.setState({selectedRuleNames: newselectedRuleNames});
   }
 
-  addGroupNameToSelected(groupName) {
+  selectRule(ruleName) {
     this.setState({
       errMsg: '',
-      selectedGroupNames: this.state.selectedGroupNames.concat(groupName)
+      selectedRuleNames: this.state.selectedRuleNames.concat(ruleName)
     });
   }
 
-  toggleSelect = groupName => {
-    if (this.getIndex(groupName) > -1)
-      this.removeGroupNameFromSelected(groupName);
+  toggleSelect = ruleName => {
+    if (this.getIndex(ruleName) > -1)
+      this.deselectRule(ruleName);
     else
-      this.addGroupNameToSelected(groupName);
+      this.selectRule(ruleName);
   };
 
   /**
-   * Selects all groups. If `groupHeaderName` is specified, only
-   * selects all groups belonging to the specified header.
+   * Selects all rules. If `ruleGroupName` is specified, only
+   * selects all rules belonging to the specified rule group.
    */
-  selectAll(groupHeaderName) {
-    let newSelectedGroupNames;
-    if (groupHeaderName) {
-      // Add groups in the header
-      newSelectedGroupNames = this.state.selectedGroupNames
-        .concat(Object.keys(groupDefinitionsByHeader[groupHeaderName]))
+  selectAll(ruleGroupName) {
+    let newselectedRuleNames;
+    if (ruleGroupName) {
+      // Add rules in the group
+      newselectedRuleNames = this.state.selectedRuleNames
+        .concat(Object.keys(availableRules[ruleGroupName]))
         // This .filter(..) is just a .distinct()
         .filter((v, i, a) => a.indexOf(v) === i);
     } else {
-      // Select all groups
-      newSelectedGroupNames = Object.keys(groupDefinitionsByHeader)
-        .map(headerName => Object.keys(groupDefinitionsByHeader[headerName]))
-        .reduce((a, b) => a.concat(b));
+      // Select all rules
+      newselectedRuleNames = Object.keys(availableRules)
+        .map(ruleName => Object.keys(availableRules[ruleName]))
+        .reduce((a, b) => a.concat(b), []);
     }
 
-    this.setState({errMsg: '', selectedGroupNames: newSelectedGroupNames});
+    this.setState({errMsg: '', selectedRuleNames: newselectedRuleNames});
   }
 
   /**
-   * Deselects all groups. If `groupHeaderName` is specified, only
-   * deselects all groups belonging to the specified header.
+   * Deselects all rules. If `ruleGroupName` is specified, only
+   * deselects all rules belonging to the specified rule group.
    */
-  selectNone(groupHeaderName) {
-    let newSelectedGroupNames = this.state.selectedGroupNames.filter(
-      function(groupName) {
-        // If a group header is specified, then keep this group if
-        // it doesn't belong to the specified group header
-        if (groupHeaderName)
-          return !Object.keys(groupDefinitionsByHeader[groupHeaderName]).includes(groupName);
-        // Otherwise, definitely don't keep this group
+  selectNone(ruleGroupName) {
+    let newselectedRuleNames = this.state.selectedRuleNames.filter(
+      function(ruleName) {
+        // If a rule group is specified, then keep this rule if
+        // it doesn't belong to the specified rule group
+        if (ruleGroupName)
+          return !Object.keys(availableRules[ruleGroupName]).includes(ruleName);
+        // Otherwise, definitely don't keep this rule
         return false;
       });
 
-    this.setState({selectedGroupNames: newSelectedGroupNames});
+    this.setState({selectedRuleNames: newselectedRuleNames});
   }
 
-  getGroupHeader(groupHeaderName, groupNames) {
+  getRuleGroupRow(ruleGroupName, ruleNames) {
     let checkBtn = "glyphicon glyphicon-small glyphicon-";
     let status;
-    if (groupNames.every(groupName => this.isSelected(groupName)))
+    if (ruleNames.every(ruleName => this.isSelected(ruleName)))
       status = 'check';
-    else if (groupNames.some(groupName => this.isSelected(groupName)))
+    else if (ruleNames.some(ruleName => this.isSelected(ruleName)))
       status = 'check half';
     else
       status = 'unchecked';
     checkBtn += status;
 
     return <div
-      key={'group_header_' + groupHeaderName}
+      key={'rule_group_' + ruleGroupName}
       onClick={() => {
         if (status === 'check')
-          this.selectNone(groupHeaderName);
+          this.selectNone(ruleGroupName);
         else if (status === 'check half' || status === 'unchecked')
-          this.selectAll(groupHeaderName);
+          this.selectAll(ruleGroupName);
         //e.stopPropagation(); // TODO: Move this click-handler to the toggle-caret span below
       }}
       className="choose-row"
@@ -145,49 +145,51 @@ export default class ChooseSyllables extends Component {
       { <span className={checkBtn} /> }
       {/*{ <span className="toggle-caret">&#9650;</span> }*/}
       {/*There is one space here, and groups have two spaces*/}
-      { <b>&nbsp;{groupHeaderName}</b> }
+      { <b>&nbsp;{ruleGroupName}</b> }
     </div>
   }
 
   /**
-   * Returns visible rows for every header and group.
+   * Returns visible rows for every rule group and rule.
    */
-  getRowsForSyllableGroups() {
-    let groups = [];
+  getRows() {
+    let rows = [];
     let idx = 0;
 
-    Object.keys(groupDefinitionsByHeader).forEach((groupHeaderName) => {
-      let groupDefinitions = groupDefinitionsByHeader[groupHeaderName];
-      let groupNames = Object.keys(groupDefinitions);
+    Object.keys(availableRules).forEach((ruleGroupName) => {
+      let rules = availableRules[ruleGroupName];
+      let ruleNames = Object.keys(rules);
 
-      // Add a quasi-group for the group header, so we can select all/none
-      groups.push(this.getGroupHeader(groupHeaderName, groupNames));
+      // Add a row for the rule group, so we can select all/none
+      rows.push(this.getRuleGroupRow(ruleGroupName, ruleNames));
 
-      // Add a group for each group definition
-      groupNames.forEach((groupName) => {
-        let definition = groupDefinitions[groupName];
-        groups.push(<SyllableGroup
+      // Add a row for each rule in the rule group
+      ruleNames.forEach((ruleName) => {
+        let rule = rules[ruleName];
+        rows.push(<GameRule
           key={idx}
-          groupName={groupName}
-          groupType={definition.type}
-          characterSet={definition.characterSet}
-          selected={this.isSelected(groupName)}
+          ruleName={ruleName}
+          ruleType={rule.type}
+          allowedLetters={rule.allowedLetters}
+          allowedSyllables={rule.allowedSyllables}
+          selected={this.isSelected(ruleName)}
           handleToggleSelect={this.toggleSelect}
         />);
         idx++;
       });
     });
 
-    return groups;
+    return rows;
   }
 
   startGame() {
-    if (this.state.selectedGroupNames.length < 1) {
-      this.setState({ errMsg: 'Choose at least one group!'});
+    // TODO: Add more validation
+    if (this.state.selectedRuleNames.length < 1) {
+      this.setState({ errMsg: 'Choose at least one rule!'});
       return;
     }
 
-    this.props.handleStartGame(this.state.selectedGroupNames);
+    this.props.handleStartGame(this.state.selectedRuleNames);
   }
 
   render() {
@@ -213,7 +215,7 @@ export default class ChooseSyllables extends Component {
             <div className="panel panel-default">
               <div className="panel-heading">Hangeul · 한글</div>
               <div className="panel-body selection-areas">
-                {this.getRowsForSyllableGroups(0, 1)}
+                {this.getRows(0, 1)}
               </div>
             </div>
             <div className="panel-footer text-center">

@@ -43,7 +43,7 @@ export default class Game extends Component {
             <Question isLocked={this.props.isLocked}
                       handleStageUp={this.stageUp}
                       stage={this.props.stage}
-                      selectedGroupNames={this.props.selectedGroupNames} />
+                      selectedRuleNames={this.props.selectedRuleNames} />
         }
       </div>
     );
