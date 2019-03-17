@@ -5,10 +5,11 @@ See live at https://hangeul.soy/
 
 Install dependencies
 1. `npm install`
-2. `npm audit fix` (because of some vulnerability)
+2. `npm audit fix` (because of some vulnerabilities)
 
 Development:
-1. `npm dev`
-2. Go to http://localhost:8080
+1. `npm run dev`
+2. Go to http://127.0.0.1:8080 (it will auto-open)
 
-Production: `npm run build`
+Deployment to production:
+Push to Heroku git repo
