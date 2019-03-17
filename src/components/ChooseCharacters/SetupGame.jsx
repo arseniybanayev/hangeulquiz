@@ -241,8 +241,8 @@ export default class SetupGame extends Component {
             <span className="pull-right lock">Lock to stage &nbsp;
               {
                 this.props.isLocked &&
-                  <input className="stage-choice" type="number" min="1" max="4" maxLength="1" size="1"
-                    onChange={(e)=>this.props.lockStage(e.target.value, true)}
+                  <input className="stage-choice" type="number" min="1" max="3" maxLength="1" size="1"
+                    onChange={(e)=>this.props.lockStage(parseInt(e.target.value), true)}
                     value={this.props.stage}
                   />
               }

@@ -23,8 +23,8 @@ export default class GameContainer extends Component {
     // Keep the selected stage within a range
     if (parseInt(this.state.stage) < 1 || isNaN(parseInt(this.state.stage)))
       this.setState({stage: 1});
-    else if (parseInt(this.state.stage) > 4)
-      this.setState({stage: 4});
+    else if (parseInt(this.state.stage) > 3)
+      this.setState({stage: 3});
 
     // Save the selected rule names to local storage
     localStorage.setItem('selectedRuleNames', JSON.stringify(selectedRuleNames));
@@ -41,7 +41,7 @@ export default class GameContainer extends Component {
   };
 
   stageUp = () => {
-    this.setState({stage: this.state.stage+1});
+    this.setState({stage: this.state.stage + 1});
   };
 
   lockStage = (stage, forceLock) => {

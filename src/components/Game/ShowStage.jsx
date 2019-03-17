@@ -14,7 +14,7 @@ export default class ShowStage extends Component {
 
   componentDidMount() {
     this.setState({show: true});
-    if (this.props.stage <= 4)
+    if (this.props.stage <= 3)
       this.timeoutID = setTimeout(this.removeStage, 1200); // how soon we start fading out (1500)
     window.scrollTo(0,0);
   }
@@ -36,14 +36,13 @@ export default class ShowStage extends Component {
     if (this.props.stage === 1) stageDescription = 'Choose one';
     else if (this.props.stage === 2) { stageDescription = 'Choose one'; stageSecondaryDescription = 'Reverse'; }
     else if (this.props.stage === 3) stageDescription = 'Write the answer';
-    else if (this.props.stage === 4) { stageDescription = 'Write the answer'; stageSecondaryDescription = 'Three at once'; }
-    else if (this.props.stage === 5)
+    else if (this.props.stage === 4)
       return (
         <div className="text-center show-end">
           <h1>Congratulations!</h1>
-          <h3>You have passed all 4 stages.</h3>
+          <h3>You have passed all 3 stages.</h3>
           <h4>Would you like to keep playing or go back to menu?</h4>
-          <p><button className="btn btn-danger keep-playing" onClick={()=>this.props.lockStage(4)}>Keep playing</button></p>
+          <p><button className="btn btn-danger keep-playing" onClick={()=>this.props.lockStage(3)}>Keep playing</button></p>
           <p><button className="btn btn-danger back-to-menu" onClick={this.props.handleEndGame}>Back to menu</button></p>
         </div>
       );

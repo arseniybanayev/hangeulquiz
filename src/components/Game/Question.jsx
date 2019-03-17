@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { quizSettings } from '../../quizSettings';
+import { gameSettings } from '../../gameSettings';
 import {
   getRandomSyllables,
   getRomanization
 } from '../../util';
 import './Question.scss';
-import {availableRules} from "../../hangeul";
 
 /**
  * Self-explanatory. Also displays itself.
@@ -34,10 +33,10 @@ export default class Question extends Component {
 
     // Determine which of the answer options are acceptable answers
     this.correctAnswers = [];
-    if (this.props.stage === 1 || this.props.stage === 3) // Answers for stages 1 and 3 are romanizations
-      this.correctAnswers = this.currentQuestion.map(s => getRomanization(s));
-    else if (this.props.stage === 2) // Answers for stage 2 are the Hangeul syllables
-      this.correctAnswers = this.currentQuestion;
+    if (this.props.stage === 1 || this.props.stage === 3) // Answers for stage 1 and 3 are romanizations
+      this.correctAnswers = this.currentQuestion.map(hex => getRomanization(hex));
+    else if (this.props.stage === 2) // Answers for stage 2 are Hangeul syllables
+      this.correctAnswers = this.currentQuestion.map(hex => String.fromCharCode(parseInt(hex, 16)));
   }
 
   getWritingTypeOfAnswerForCurrentStage() {
@@ -102,7 +101,7 @@ export default class Question extends Component {
     });
 
     // Show another question
-    if (this.stageProgress >= quizSettings.stageLength[this.props.stage] && !this.props.isLocked)
+    if (this.stageProgress >= gameSettings.stageLength[this.props.stage] && !this.props.isLocked)
       setTimeout(() => { this.props.handleStageUp() }, 300);
     else
       this.setNewQuestion();
@@ -134,7 +133,7 @@ export default class Question extends Component {
     let btnClass = "btn btn-default answer-button";
     if ('ontouchstart' in window)
       btnClass += " no-hover"; // disables hover effect on touch screens
-    let stageProgressPercentage = Math.round((this.state.stageProgress/quizSettings.stageLength[this.props.stage])*100)+'%';
+    let stageProgressPercentage = Math.round((this.state.stageProgress/gameSettings.stageLength[this.props.stage])*100)+'%';
     let stageProgressPercentageStyle = { width: stageProgressPercentage };
     return (
       <div className="text-center question col-xs-12">
@@ -162,7 +161,7 @@ export default class Question extends Component {
             role="progressbar"
             aria-valuenow={this.state.stageProgress}
             aria-valuemin="0"
-            aria-valuemax={quizSettings.stageLength[this.props.stage]}
+            aria-valuemax={gameSettings.stageLength[this.props.stage]}
             style={stageProgressPercentageStyle}
           >
             <span>Stage {this.props.stage} {this.props.isLocked?' (Locked)':''}</span>
