@@ -9,7 +9,7 @@ module.exports = {
         app.use('/public', publicPath);
 
         app.get('*', (req, res) => {
-            res.sendFile(path.resolve(__dirname, 'index.html'));
+            res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
         });
 
         return app
