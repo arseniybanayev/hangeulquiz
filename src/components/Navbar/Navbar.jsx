@@ -14,7 +14,7 @@ export default class Navbar extends Component {
               {
                 this.props.gameState === 'game' ? (
                   <li id="nav-choosecharacters">
-                    <a href="javascript:;" onClick={this.props.handleEndGame}>
+                    <a href="javascript:" onClick={this.props.handleEndGame}>
                       <span className="glyphicon glyphicon-small glyphicon-arrow-left"/> Back to menu
                     </a>
                   </li>

@@ -204,6 +204,8 @@ export default class SetupGame extends Component {
             <div className="panel panel-default">
               <div className="panel-body welcome">
                 <h4>Welcome to Hangeul.soy!</h4>
+                <p>This tool will train you to recognize entire syllables quickly, so
+                  that you do not need to slowly read letter by letter.</p>
                 <p>Please choose the groups of syllables that you'd like to study.</p>
               </div>
             </div>

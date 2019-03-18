@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.scss';
 import Navbar from '../Navbar/Navbar';
 import GameContainer from '../GameContainer/GameContainer';
+import Footer from '../Footer/Footer';
 
 /**
  * Main entry, has a GameContainer and other visual/HTML-only components.
@@ -47,6 +48,7 @@ export default class App extends Component {
             />
           </div>
         </div>
+        <Footer />
       </div>
     )
   }
