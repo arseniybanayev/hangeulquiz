@@ -10,6 +10,7 @@ export default class Footer extends Component {
           <a href="https://github.com/arseniybanayev/hangeul-soy">
             https://github.com/arseniybanayev/hangeul-soy
           </a>
+          <p />
         </div>
       </footer>
     )

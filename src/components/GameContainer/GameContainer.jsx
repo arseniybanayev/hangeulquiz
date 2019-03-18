@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import SetupGame from '../ChooseCharacters/SetupGame';
 import Game from '../Game/Game';
-import {getAllowedSyllables, lookupRulesByName} from "../../util";
+import {getAllowedSyllables, lookupLetterSetsByName, lookupSyllableSetsByName} from "../../util";
 
 /**
  * Manages and displays either the game screen (Game) or the settings screen (SetupGame).
@@ -10,8 +10,9 @@ export default class GameContainer extends Component {
   state = {
     stage: 1,
     isLocked: false,
-    // Read the previously selected rules name from local storage
-    selectedRuleNames: JSON.parse(localStorage.getItem('selectedRuleNames') || null) || []
+    // Read the previously selected syllable/letter sets from local storage
+    selectedLetterSetNames: JSON.parse(localStorage.getItem('selectedLetterSetNames') || null) || [],
+    selectedSyllableSetNames: JSON.parse(localStorage.getItem('selectedSyllableSetNames') || null) || []
   };
 
   componentWillReceiveProps() {
@@ -19,7 +20,7 @@ export default class GameContainer extends Component {
       this.setState({stage: 1});
   }
 
-  startGame = selectedRuleNames => {
+  startGame = (selectedLetterSetNames, selectedSyllableSetNames) => {
     // Keep the selected stage within a range
     if (parseInt(this.state.stage) < 1 || isNaN(parseInt(this.state.stage)))
       this.setState({stage: 1});
@@ -27,12 +28,16 @@ export default class GameContainer extends Component {
       this.setState({stage: 3});
 
     // Save the selected rule names to local storage
-    localStorage.setItem('selectedRuleNames', JSON.stringify(selectedRuleNames));
+    localStorage.setItem('selectedLetterSetNames', JSON.stringify(selectedLetterSetNames));
+    localStorage.setItem('selectedSyllableSetNames', JSON.stringify(selectedSyllableSetNames));
 
     // Determine the allowed syllable set before the game starts
-    let allowedSyllables = getAllowedSyllables(lookupRulesByName(selectedRuleNames));
+    let letterSets = lookupLetterSetsByName(selectedLetterSetNames);
+    let syllableSets = lookupSyllableSetsByName(selectedSyllableSetNames);
+    let allowedSyllables = getAllowedSyllables(letterSets, syllableSets);
     this.setState({
-      selectedRuleNames: selectedRuleNames,
+      selectedLetterSetNames: selectedLetterSetNames,
+      selectedSyllableSetNames: selectedSyllableSetNames,
       allowedSyllables: allowedSyllables
     });
 
@@ -55,7 +60,8 @@ export default class GameContainer extends Component {
     return (
       <div>
         { this.props.gameState === 'chooseCharacters' &&
-            <SetupGame selectedRuleNames={this.state.selectedRuleNames}
+            <SetupGame selectedLetterSetNames={this.state.selectedLetterSetNames}
+                       selectedSyllableSetNames={this.state.selectedSyllableSetNames}
                        handleStartGame={this.startGame}
                        stage={this.state.stage}
                        isLocked={this.state.isLocked}

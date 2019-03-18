@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import {WritingType} from "../Game/Question";
 import {romanizations} from "../../hangeul";
-import {shuffle} from "../../util";
 
 /**
  * A set of inclusions/exclusions on allowed questions. Intended to control what
  * syllables appear in the game by difficulty or frequency/commonness.
  */
-export default class GameRule extends Component {
+export default class LetterSet extends Component {
   state = { displayString: '' };
 
   changeDisplayString(newString) {
@@ -15,21 +14,9 @@ export default class GameRule extends Component {
   }
 
   getDisplayString(writingType) {
-    if (this.props.allowedLetters) {
-      return this.props.allowedLetters
-        .map(c => writingType === WritingType.HANGEUL ? c : romanizations[c][0])
-        .join(' · ');
-    } else if (this.props.allowedSyllables) {
-      let allowedSyllables = this.props.allowedSyllables;
-      shuffle(allowedSyllables);
-      return allowedSyllables
-        .splice(0, 5)
-        .map(hex => String.fromCharCode(parseInt(hex, 16)))
-        .concat(['...'])
-        .join(' · ');
-    } else {
-      return 'Allow?';
-    }
+    return this.props.allowedLetters
+      .map(c => writingType === WritingType.HANGEUL ? c : romanizations[c][0])
+      .join(' · ');
   }
 
   componentWillMount() {
@@ -40,7 +27,7 @@ export default class GameRule extends Component {
     return (
       <div
         className={'choose-row'}
-        onClick={() => this.props.handleToggleSelect(this.props.ruleName)}
+        onClick={() => this.props.handleToggleSelect(this.props.name)}
         onMouseDown={() => this.changeDisplayString(this.getDisplayString(WritingType.ROMANIZATION))}
         onMouseUp={() => this.changeDisplayString(this.getDisplayString(WritingType.HANGEUL))}
         onTouchStart={() => this.changeDisplayString(this.getDisplayString(WritingType.ROMANIZATION))}
@@ -49,8 +36,8 @@ export default class GameRule extends Component {
         <span className={this.props.selected ?
           'glyphicon glyphicon-small glyphicon-check' :
           'glyphicon glyphicon-small glyphicon-unchecked'} />
-          {/*There are two spaces here, and headers have one space*/}
-          &nbsp;&nbsp;{this.props.ruleName}: {this.state.displayString}
+          {/*There are two spaces here, and categories have one space*/}
+          &nbsp;&nbsp;{this.props.name}: {this.state.displayString}
       </div>
     );
   }

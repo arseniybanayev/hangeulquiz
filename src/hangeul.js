@@ -2502,92 +2502,68 @@ export const koreanStandard = [
   'd79d'
 ];
 
-export let RuleType = {
-  ALLOWED_SYLLABLES: 1,
-  ALLOWED_CONSONANTS: 2,
-  ALLOWED_VOWELS: 3,
-  ALLOW_FINAL_CONSONANTS: 4
+export let LetterSetCategory = {
+  CONSONANTS: "Consonants",
+  VOWELS: "Vowels"
 };
 
-export const ruleGroupColumnDefinitions = [
-  ['Consonants', 'Final Consonants'],
-  ['Vowels', 'Specific Syllables']
-];
+export const availableSyllableSets = {
+  'Common Syllables': koreanStandard
+};
 
-export const availableRules = {
-  // TODO: Consider adding rules to control syllable font.
-  //       ex: 'font-family: \'Gaegu\', cursive;',
-
-  'Consonants': {
-    'Velar Consonants': {
-      type: RuleType.ALLOWED_CONSONANTS,
-      allowedLetters: ['ᄀ', 'ᄏ'],
-      similarAllowedLetters: ['ᆨ', 'ᆿ']
-    },
-    'Sibilant Consonants': {
-      type: RuleType.ALLOWED_CONSONANTS,
-      allowedLetters: ['ᄉ', 'ᄌ', 'ᄎ'],
-      similarAllowedLetters: ['ᆺ', 'ᆽ', 'ᆾ']
-    },
-    'Coronal Consonants': {
-      type: RuleType.ALLOWED_CONSONANTS,
-      allowedLetters: ['ᄂ', 'ᄃ', 'ᄐ', 'ᄅ'],
-      similarAllowedLetters: ['ᆫ', 'ᆮ', 'ᇀ', 'ᆯ']
-    },
-    'Bilabial Consonants': {
-      type: RuleType.ALLOWED_CONSONANTS,
-      allowedLetters: ['ᄆ', 'ᄇ', 'ᄑ'],
-      similarAllowedLetters: ['ᆷ', 'ᆸ', 'ᇁ']
-    },
-    'Dorsal Consonants': {
-      type: RuleType.ALLOWED_CONSONANTS,
-      allowedLetters: ['ᄋ', 'ᄒ'],
-      similarAllowedLetters: ['ᆼ', 'ᇂ']
-    },
-    'Tense/Doubled Consonants': {
-      type: RuleType.ALLOWED_CONSONANTS,
-      allowedLetters: ['ᄁ', 'ᄄ', 'ᄈ', 'ᄊ', 'ᄍ'],
-      similarAllowedLetters: ['ᆩ', 'ᆪ', 'ᆬ', 'ᆭ', 'ᆰ', 'ᆱ', 'ᆲ', 'ᆳ', 'ᆴ', 'ᆵ', 'ᆶ', 'ᆹ', 'ᆻ']
-    }
+export const availableLetterSets = {
+  'Velar Consonants': {
+    category: LetterSetCategory.CONSONANTS,
+    allowedLetters: ['ᄀ', 'ᄏ'],
+    similarAllowedLetters: ['ᆨ', 'ᆿ']
   },
-
-  'Vowels': {
-    'Basic Vowels': {
-      type: RuleType.ALLOWED_VOWELS,
-      allowedLetters: ['ᅡ', 'ᅥ', 'ᅩ', 'ᅮ', 'ᅳ', 'ᅵ']
-    },
-    'Basic Vowels +i': {
-      type: RuleType.ALLOWED_VOWELS,
-      allowedLetters: ['ᅢ', 'ᅦ', 'ᅱ', 'ᅬ', 'ᅴ']
-    },
-    'Basic Vowels +y': {
-      type: RuleType.ALLOWED_VOWELS,
-      allowedLetters: ['ᅣ', 'ᅧ', 'ᅭ', 'ᅲ']
-    },
-    'Basic Vowels +i +y': {
-      type: RuleType.ALLOWED_VOWELS,
-      allowedLetters: ['ᅤ', 'ᅨ']
-    },
-    'Basic Vowels +w': {
-      type: RuleType.ALLOWED_VOWELS,
-      allowedLetters: ['ᅪ', 'ᅯ']
-    },
-    'Basic Vowels +w +i': {
-      type: RuleType.ALLOWED_VOWELS,
-      allowedLetters: ['ᅫ', 'ᅰ']
-    }
+  'Sibilant Consonants': {
+    category: LetterSetCategory.CONSONANTS,
+    allowedLetters: ['ᄉ', 'ᄌ', 'ᄎ'],
+    similarAllowedLetters: ['ᆺ', 'ᆽ', 'ᆾ']
   },
-
-  'Final Consonants': {
-    'Final Consonants': {
-      type: RuleType.ALLOW_FINAL_CONSONANTS
-    }
+  'Coronal Consonants': {
+    category: LetterSetCategory.CONSONANTS,
+    allowedLetters: ['ᄂ', 'ᄃ', 'ᄐ', 'ᄅ'],
+    similarAllowedLetters: ['ᆫ', 'ᆮ', 'ᇀ', 'ᆯ']
   },
-
-  'Specific Syllables': {
-    'Common Syllables': {
-      type: RuleType.ALLOWED_SYLLABLES,
-      allowedSyllables: koreanStandard
-    }
+  'Bilabial Consonants': {
+    category: LetterSetCategory.CONSONANTS,
+    allowedLetters: ['ᄆ', 'ᄇ', 'ᄑ'],
+    similarAllowedLetters: ['ᆷ', 'ᆸ', 'ᇁ']
+  },
+  'Dorsal Consonants': {
+    category: LetterSetCategory.CONSONANTS,
+    allowedLetters: ['ᄋ', 'ᄒ'],
+    similarAllowedLetters: ['ᆼ', 'ᇂ']
+  },
+  'Tense/Doubled Consonants': {
+    category: LetterSetCategory.CONSONANTS,
+    allowedLetters: ['ᄁ', 'ᄄ', 'ᄈ', 'ᄊ', 'ᄍ'],
+    similarAllowedLetters: ['ᆩ', 'ᆪ', 'ᆬ', 'ᆭ', 'ᆰ', 'ᆱ', 'ᆲ', 'ᆳ', 'ᆴ', 'ᆵ', 'ᆶ', 'ᆹ', 'ᆻ']
+  },
+  'Basic Vowels': {
+    category: LetterSetCategory.VOWELS,
+    allowedLetters: ['ᅡ', 'ᅥ', 'ᅩ', 'ᅮ', 'ᅳ', 'ᅵ']
+  },
+  'Basic Vowels +i': {
+    category: LetterSetCategory.VOWELS,
+    allowedLetters: ['ᅢ', 'ᅦ', 'ᅱ', 'ᅬ', 'ᅴ']
+  },
+  'Basic Vowels +y': {
+    category: LetterSetCategory.VOWELS,
+    allowedLetters: ['ᅣ', 'ᅧ', 'ᅭ', 'ᅲ']
+  },
+  'Basic Vowels +i +y': {
+    category: LetterSetCategory.VOWELS,
+    allowedLetters: ['ᅤ', 'ᅨ']
+  },
+  'Basic Vowels +w': {
+    category: LetterSetCategory.VOWELS,
+    allowedLetters: ['ᅪ', 'ᅯ']
+  },
+  'Basic Vowels +w +i': {
+    category: LetterSetCategory.VOWELS,
+    allowedLetters: ['ᅫ', 'ᅰ']
   }
 };

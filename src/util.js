@@ -1,6 +1,5 @@
 import * as hangeul from "./hangeul";
-import {RuleType} from "./hangeul";
-import {availableRules} from "./hangeul";
+import {availableLetterSets, availableSyllableSets} from "./hangeul";
 
 /**
  * Parses the specified hexadecimal code into a syllable and returns an array
@@ -41,64 +40,66 @@ export function getRomanization(syllableHex) {
 }
 
 /**
- * Returns an array of allowed syllables, identified (as usual) by their hexadecimal Unicode
- * values, narrowed down from the full array by taking into account the specified rules.
+ * Returns an array of allowed syllables, identified (as usual) by their hexadecimal Unicode values,
+ * narrowed down from the full array by taking into account the specified allowed letter/syllable sets.
+ *
+ * @param allowedSyllableSets Identified by their hexadecimal Unicode values, as usual.
  */
-export function getAllowedSyllables(rules) {
+export function getAllowedSyllables(allowedLetterSets, allowedSyllableSets) {
   // Start with all syllables
   let allowedSyllables = [...Array(parseInt(hangeul.last, 16) - parseInt(hangeul.first, 16) + 1).keys()]
-    .map(e => e + parseInt(hangeul.first, 16));
+      .map(e => e + parseInt(hangeul.first, 16));
 
-  // Narrow down to ALLOWED_SYLLABLES rules, if any
+  // Narrow down to the allowed syllable sets
   allowedSyllables = intersection(
-    rules
-      .filter(r => r.type === RuleType.ALLOWED_SYLLABLES)
-      .map(r => r.allowedSyllables.map(s => parseInt(s, 16)))
+    allowedSyllableSets
+      .map(set => set.map(h => parseInt(h, 16)))
       .concat([allowedSyllables])
   );
 
-  // Narrow down to ALLOWED_VOWELS and ALLOWED_CONSONANTS rules, if any
-  let allowedLetters = rules
-    .filter(r => r.type === RuleType.ALLOWED_CONSONANTS || r.type === RuleType.ALLOWED_VOWELS)
-    .map(r => r.allowedLetters.concat(r.similarAllowedLetters ? r.similarAllowedLetters : []))
-    .reduce((a, b) => a.concat(b).filter((v, i, a) => a.indexOf(v) === i), []); // .union()
+  // Narrow down to the allowed letter sets
+  let allowedLetters = allowedLetterSets
+      .map(r => r.allowedLetters.concat(r.similarAllowedLetters ? r.similarAllowedLetters : []))
+      .reduce((a, b) => a.concat(b).filter((v, i, a) => a.indexOf(v) === i), []); // .union()
 
   // Filter out final consonants to respect the ALLOW_FINAL_CONSONANTS rule
-  let finalConsonantsOn = rules.some(r => r.type === RuleType.ALLOW_FINAL_CONSONANTS);
+  let finalConsonantsOn = true; // TODO
 
   // TODO: Do this using math instead of iteration
   allowedSyllables = allowedSyllables
-    .filter(s => {
-      let letters = getIndividualLettersFromHex(s.toString(16));
+      .filter(s => {
+        let letters = getIndividualLettersFromHex(s.toString(16));
 
-      // Check if the letters are allowed (or, for the case of the final consonant in particular, empty, meaning no letter)
-      if (allowedLetters.length > 0 && !letters.every(l => allowedLetters.includes(l) || l === ''))
-        return false;
+        // Check if the letters are allowed (or, for the case of the final consonant in particular, empty, meaning no letter)
+        if (allowedLetters.length > 0 && !letters.every(l => allowedLetters.includes(l) || l === ''))
+          return false;
 
-      // Check if final consonants are allowed
-      if (!finalConsonantsOn && letters[2] !== '')
-        return false;
+        // Check if final consonants are allowed
+        if (!finalConsonantsOn && letters[2] !== '')
+          return false;
 
-      return true;
-    });
+        return true;
+      });
 
   return allowedSyllables.map(s => s.toString(16));
 }
 
-/**
- * Converts a rule name into the full rule. Effectively a deserialization method,
- * whereas the serialization method is just (rule => rule.name).
- */
-export function lookupRulesByName(ruleNames) {
-  let rules = [];
-  Object.keys(availableRules).forEach(ruleGroupName => {
-    let ruleGroup = availableRules[ruleGroupName];
-    Object.keys(ruleGroup).forEach(ruleName => {
-      if (ruleNames.includes(ruleName))
-        rules.push(ruleGroup[ruleName]);
-    })
+export function lookupLetterSetsByName(letterSetNames) {
+  let letterSets = [];
+  Object.keys(availableLetterSets).forEach(letterSetName => {
+    if (letterSetNames.includes(letterSetName))
+      letterSets.push(availableLetterSets[letterSetName]);
   });
-  return rules;
+  return letterSets;
+}
+
+export function lookupSyllableSetsByName(syllableSetNames) {
+  let syllableSets = [];
+  Object.keys(availableSyllableSets).forEach(syllableSetName => {
+    if (syllableSetNames.includes(syllableSetName))
+      syllableSets.push(availableSyllableSets[syllableSetName]);
+  });
+  return syllableSets;
 }
 
 /**
@@ -109,7 +110,7 @@ export function lookupRulesByName(ruleNames) {
  *    Number of random syllables to return in total, after taking into account `includeSyllableHexes` and `excludeSyllableHexes`.
  *
  * @param allowedSyllableHexes
- *    A required array that includes syllables that we can choose from (based on the rules),
+ *    A required array that includes syllables that we can choose from (based on the selected syllable/letter sets),
  *    identified (as usual) by their hexadecimal Unicode values.
  *
  * @param includeSyllableHexes
