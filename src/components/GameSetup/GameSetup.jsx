@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Switch from 'react-toggle-switch';
 import {availableLetterSets, availableSyllableSets} from '../../hangeul';
-import './SetupGame.scss';
+import './GameSetup.scss';
 import LetterSet from './LetterSet';
 import {getAllowedSyllables, lookupLetterSetsByName, lookupSyllableSetsByName} from "../../util";
 import SyllableSet from "./SyllableSet";
@@ -9,7 +9,7 @@ import SyllableSet from "./SyllableSet";
 /**
  * View and controller of game settings.
  */
-export default class SetupGame extends Component {
+export default class GameSetup extends Component {
   state = {
     errMsg : '',
     selectedLetterSetNames: this.props.selectedLetterSetNames,
@@ -212,7 +212,7 @@ export default class SetupGame extends Component {
       this.selectSyllableSet(name);
   };
 
-  startGame() {
+  handleStartGameButtonClicked() {
     // Determine the allowed syllable set before the game starts
     let letterSets = lookupLetterSetsByName(this.state.selectedLetterSetNames);
     let syllableSets = lookupSyllableSetsByName(this.state.selectedSyllableSetNames);
@@ -222,6 +222,7 @@ export default class SetupGame extends Component {
       return;
     }
 
+    // Tell the GameContainer to start the game
     this.props.handleStartGame(this.state.selectedLetterSetNames, this.state.selectedSyllableSetNames);
   }
 
@@ -291,7 +292,9 @@ export default class SetupGame extends Component {
               this.state.errMsg !== '' &&
                 <div className="error-message">{this.state.errMsg}</div>
             }
-            <button id="startButton" className="btn btn-danger startgame-button" onClick={() => this.startGame()}>Start the Quiz!</button>
+            <button id="startButton" className="btn btn-danger startgame-button" onClick={() => this.handleStartGameButtonClicked()}>
+              Start the Quiz!
+            </button>
           </div>
           <div className="down-arrow"
             style={{display: this.state.startIsVisible ? 'none' : 'block'}}

@@ -12,13 +12,20 @@ export default class Navbar extends Component {
           <div id="navbar">
             <ul className="nav navbar-nav">
               {
-                this.props.gameState === 'game' ? (
-                  <li id="nav-choosecharacters">
-                    <a href="javascript:" onClick={this.props.handleEndGame}>
-                      <span className="glyphicon glyphicon-small glyphicon-arrow-left"/> Back to menu
-                    </a>
-                  </li>
-                ) : <li id="nav-hangeulsoy"><p className="nav navbar-text">Hangeul.soy</p></li>
+                this.props.gameState === 'game'
+                  ? (
+                    <li id="nav-gameSetup">
+                      <a href="javascript:" onClick={this.props.handleEndGame}>
+                        <span className="glyphicon glyphicon-small glyphicon-arrow-left"/> Back to menu
+                      </a>
+                    </li>
+                  ) : (
+                    <li id="nav-hangeulsoy">
+                      <p className="nav navbar-text">
+                        Hangeul.soy
+                      </p>
+                    </li>
+                  )
               }
             </ul>
           </div>

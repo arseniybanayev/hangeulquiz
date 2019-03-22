@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { gameSettings } from '../../gameSettings';
 import {
   getRandomSyllables,
   getRomanization
@@ -13,14 +12,13 @@ export default class Question extends Component {
   state = {
     currentAnswer: '',
     currentQuestion: [],
-    answerOptions: [],
-    stageProgress: 0
+    answerOptions: []
   };
 
   /**
    * Selects a syllable and some answer options, and set up the state to show them as the current question.
    */
-  setNewQuestion() {
+  initializeAsNewQuestion() {
     this.currentQuestion = getRandomSyllables(1,
       this.props.allowedSyllables,
       false,
@@ -86,15 +84,8 @@ export default class Question extends Component {
   }
 
   handleAnswer = chosenAnswer => {
-    // TODO Figure out what this does?
-    if (this.props.stage <= 2)
+    if (this.props.stage <= 2) // TODO Figure out what this does?
       document.activeElement.blur(); // reset answer button's :active
-
-    // Determine if the correct answer was chosen and adjust the stage progress
-    if (this.correctAnswers.includes(chosenAnswer))
-      this.stageProgress = this.stageProgress + 1;
-    else
-      this.stageProgress = this.stageProgress > 0 ? this.stageProgress - 1 : 0;
 
     // Store this as the previous question/answer
     this.previousQuestion = this.currentQuestion;
@@ -103,21 +94,19 @@ export default class Question extends Component {
 
     this.setState({
       previousAnswer: this.previousChosenAnswer,
-      stageProgress: this.stageProgress
     });
 
-    // Show another question
-    if (this.stageProgress >= gameSettings.stageLength[this.props.stage] && !this.props.isLocked)
-      setTimeout(() => { this.props.handleStageUp() }, 300);
-    else
-      this.setNewQuestion();
+    // Determine if the correct answer was chosen and adjust the stage progress
+    let isCorrectAnswer = this.correctAnswers.includes(chosenAnswer);
+    console.log('isCorrectAnswer: ' + isCorrectAnswer);
+    this.props.handleAnswer(isCorrectAnswer);
   };
 
   handleAnswerChange = e => {
     this.setState({currentAnswer: e.target.value.replace(/\s+/g, '')});
   };
 
-  handleSubmit = e => {
+  handleSubmitTypedAnswer = e => {
     e.preventDefault();
     if (this.state.currentAnswer !== '') {
       this.handleAnswer(this.state.currentAnswer.toLowerCase());
@@ -128,19 +117,16 @@ export default class Question extends Component {
   componentWillMount() {
     this.previousQuestion = [];
     this.previousChosenAnswer = '';
-    this.stageProgress = 0;
   }
 
   componentDidMount() {
-    this.setNewQuestion();
+    this.initializeAsNewQuestion();
   }
 
   render() {
     let btnClass = "btn btn-default answer-button";
     if ('ontouchstart' in window)
       btnClass += " no-hover"; // disables hover effect on touch screens
-    let stageProgressPercentage = Math.round((this.state.stageProgress / gameSettings.stageLength[this.props.stage]) * 100) + '%';
-    let stageProgressPercentageStyle = { width: stageProgressPercentage };
     return (
       <div className="text-center question col-xs-12">
         {this.getPreviousResultForDisplay()}
@@ -156,22 +142,11 @@ export default class Question extends Component {
                   handleAnswer={this.handleAnswer} />
               })
             : <div className="answer-form-container">
-                <form onSubmit={this.handleSubmit}>
+                <form onSubmit={this.handleSubmitTypedAnswer}>
                   <input autoFocus className="answer-input" type="text" value={this.state.currentAnswer} onChange={this.handleAnswerChange} />
                 </form>
               </div>
           }
-        </div>
-        <div className="progress">
-          <div className="progress-bar progress-bar-info"
-            role="progressbar"
-            aria-valuenow={this.state.stageProgress}
-            aria-valuemin="0"
-            aria-valuemax={gameSettings.stageLength[this.props.stage]}
-            style={stageProgressPercentageStyle}
-          >
-            <span>Stage {this.props.stage} {this.props.isLocked?' (Locked)':''}</span>
-          </div>
         </div>
       </div>
     );

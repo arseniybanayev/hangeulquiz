@@ -26,7 +26,7 @@ export default class ShowStage extends Component {
   removeStage = () => {
     this.setState({show: false});
     clearTimeout(this.timeoutID);
-    this.timeoutID = setTimeout(this.props.handleShowQuestion, 1000) // how soon we go to question (1000)
+    this.timeoutID = setTimeout(this.props.handleStartShowingQuestions, 1000) // how soon we go to question (1000)
   };
 
   showStage() {

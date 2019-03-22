@@ -1,0 +1,16 @@
+.progress {
+  position: relative;
+  background-color: #ddd;
+  height: 30px;
+  @media (max-width: 768px) {
+    max-width: 360px;
+    margin: 0 auto;
+  }
+}
+.progress span {
+  position: absolute;
+  top: 5px;
+  color: #444;
+  display: block;
+  width: 100%;
+}

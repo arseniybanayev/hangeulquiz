@@ -8,24 +8,14 @@ import Footer from '../Footer/Footer';
  * Main entry, has a GameContainer and other visual/HTML-only components.
  */
 export default class App extends Component {
-  state = { gameState: 'chooseCharacters' };
-
-  startGame = () => {
-    this.setState({gameState: 'game'});
-  };
-
-  endGame = () => {
-    this.setState({gameState: 'chooseCharacters'});
-  };
-
-  componentWillUpdate(nextProps, nextState) {
-    if (document.getElementById('footer')) {
-      if (nextState.gameState === 'chooseCharacters')
-        document.getElementById('footer').style.display = "block";
-      else
-        document.getElementById('footer').style.display = "none";
-    }
-  }
+  // componentWillUpdate(nextProps, nextState) {
+  //   if (document.getElementById('footer')) {
+  //     if (nextState.gameState === 'gameSetup')
+  //       document.getElementById('footer').style.display = "block";
+  //     else
+  //       document.getElementById('footer').style.display = "none";
+  //   }
+  // }
 
   componentWillMount() {
     if (document.getElementById('footer'))
@@ -41,11 +31,7 @@ export default class App extends Component {
         />
         <div className="outercontainer">
           <div className="container game">
-            <GameContainer
-              gameState={this.state.gameState}
-              handleStartGame={this.startGame}
-              handleEndGame={this.endGame}
-            />
+            <GameContainer />
           </div>
         </div>
         <Footer />
